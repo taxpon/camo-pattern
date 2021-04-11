@@ -4,11 +4,18 @@ body {
   font-family: sans-serif;
 }
 
+.ui-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
 .controls {
   position: absolute;
   margin: 10px;
   padding: 10px;
   border: 3px dashed gray;
+  background: rgba(128, 128, 128, 0.3);
 
   .ui-buttons {
     .ui-button {
@@ -18,6 +25,7 @@ body {
       display: inline-block;
       cursor: pointer;
       user-select: none;
+      border: 3px solid #666;
 
       &:hover {
         background: lightgray;
@@ -41,25 +49,17 @@ body {
   }
 }
 
-
-@media only screen and (max-width: 600px) {
-  .ui-buttons {
-    width: 100%;
+@media only screen
+  and (max-device-width: 812px) {
+  .controls {
     bottom: 0;
-    margin: 0;
-    padding: 0;
+    font-size: 4rem;
 
-    .ui-button {
-      //width: 100%;
-      margin: 0;
-      padding: 20px;
-      font-size: 2em;
-    }
-  }
-  #color-palette {
-    //margin-top: 10px;
-    label {
-      font-size: 2em;
+    .ui-buttons {
+      .ui-button {
+        padding: 20px 40px;
+      }
     }
   }
 }
+
