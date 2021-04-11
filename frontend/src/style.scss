@@ -4,13 +4,62 @@ body {
   font-family: sans-serif;
 }
 
-.ui-buttons {
+.controls {
   position: absolute;
   margin: 10px;
   padding: 10px;
+  border: 3px dashed gray;
 
-  .ui-button {
+  .ui-buttons {
+    .ui-button {
+      background: grey;
+      margin: 10px;
+      padding: 10px 20px;
+      display: inline-block;
+      cursor: pointer;
+      user-select: none;
+
+      &:hover {
+        background: lightgray;
+      }
+    }
+  }
+
+  #color-palette {
+    //border: 3px dashed gray;
     margin: 10px;
-    padding: 10px;
+
+    label {
+      user-select: none;
+      cursor: pointer;
+    }
+  }
+
+  .controls-section-title {
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+}
+
+
+@media only screen and (max-width: 600px) {
+  .ui-buttons {
+    width: 100%;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+
+    .ui-button {
+      //width: 100%;
+      margin: 0;
+      padding: 20px;
+      font-size: 2em;
+    }
+  }
+  #color-palette {
+    //margin-top: 10px;
+    label {
+      font-size: 2em;
+    }
   }
 }
