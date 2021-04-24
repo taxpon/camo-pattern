@@ -46,7 +46,23 @@ body {
       user-select: none;
       cursor: pointer;
     }
+
+    input[type=range] {
+      width: 100%;
+    }
+
+    #m90p2-control {
+      display: none;
+      margin-top: 20px;
+    }
+
+    input[value="m90p2"]:checked ~ #m90p2-control
+    {
+      display: block;
+    }
   }
+
+
 }
 
 @media only screen

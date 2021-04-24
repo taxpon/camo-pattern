@@ -20,7 +20,8 @@ export class M90Pattern2 extends BaseLogic {
             new Point(width, height)
         ]
 
-        Util.range(0, 100).forEach(_ => {
+        let numPoints = State.getState(StateKey.NUM_POINTS) - 1
+        Util.range(0, numPoints).forEach(_ => {
             points.push(new Point(Math.random() * width, Math.random() * height))
         })
 
@@ -44,7 +45,6 @@ export class M90Pattern2 extends BaseLogic {
                 if (triangle.getCircumcircle().isIncluding(p)) {
                     edges = edges.concat(triangle.edges)
                     delete triangles[i]  // TODO: Optimization
-                    console.log(i, "should be deleted")
                 }
             })
 

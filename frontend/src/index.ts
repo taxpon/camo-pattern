@@ -23,6 +23,7 @@ window.onload = () => {
     let form = document.getElementById("controls-values");
     State.setState(StateKey.PATTERN, form["camo-pattern"].value);
     State.setState(StateKey.PALETTE, form["color-palette"].value);
+    State.setState(StateKey.NUM_POINTS, form["num-points"].value);
 
     let camoRadios = document.querySelectorAll("#camo-pattern input[type=radio]");
     camoRadios.forEach((elem: HTMLInputElement) => {
@@ -32,6 +33,15 @@ window.onload = () => {
             }
         }
     })
+
+    let camoSlider = document.querySelector("#camo-pattern input[name=num-points]") as HTMLInputElement;
+    let camoSliderIndicator = document.getElementById("num-points-val");
+    camoSlider.onchange = _ => {
+        camoSliderIndicator.textContent = camoSlider.value
+        if (State.getState(StateKey.NUM_POINTS) != camoSlider.value) {
+            State.setState(StateKey.NUM_POINTS, camoSlider.value)
+        }
+    }
 
     let colorRadios = document.querySelectorAll("#color-palette input[type=radio]");
     colorRadios.forEach((elem: HTMLInputElement) => {
