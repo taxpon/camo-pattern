@@ -21,7 +21,17 @@
             </div>
             <div id="camo-pattern" class="controls-section">
                 <div class="controls-section-title">Camo Pattern</div>
-                <label><input name="camo-pattern" type="radio" value="m90p1" checked>M90(1)</label>
+                <label><input name="camo-pattern" type="radio" value="m90p1">M90(1)</label>
+                <label>
+                    <input name="camo-pattern" type="radio" value="m90p2" checked>M90(2)
+                    <div id="m90p2-control">
+                        <div class="controls-section-title">Custom Parameter</div>
+                        <label>Number of Points (<span id="num-points-val">50</span>)</label><br>
+                        <input type="range" name="num-points" min="1" max="500" value="50">
+                    </div>
+
+                </label>
+
             </div>
             <div id="color-palette" class="controls-section">
                 <div class="controls-section-title">Color Palette</div>
