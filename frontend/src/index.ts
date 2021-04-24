@@ -24,6 +24,7 @@ window.onload = () => {
     State.setState(StateKey.PATTERN, form["camo-pattern"].value);
     State.setState(StateKey.PALETTE, form["color-palette"].value);
     State.setState(StateKey.NUM_POINTS, form["num-points"].value);
+    State.setState(StateKey.ANIMATE, false);
 
     let camoRadios = document.querySelectorAll("#camo-pattern input[type=radio]");
     camoRadios.forEach((elem: HTMLInputElement) => {
@@ -40,6 +41,20 @@ window.onload = () => {
         camoSliderIndicator.textContent = camoSlider.value
         if (State.getState(StateKey.NUM_POINTS) != camoSlider.value) {
             State.setState(StateKey.NUM_POINTS, camoSlider.value)
+        }
+    }
+
+    let startAnimate = document.getElementById("start-animate");
+    startAnimate.onclick = _ => {
+        if (State.getState(StateKey.ANIMATE) !== true) {
+            State.setState(StateKey.ANIMATE, true)
+        }
+    }
+
+    let stopAnimate = document.getElementById("stop-animate");
+    stopAnimate.onclick = _ => {
+        if (State.getState(StateKey.ANIMATE) !== false) {
+            State.setState(StateKey.ANIMATE, false)
         }
     }
 

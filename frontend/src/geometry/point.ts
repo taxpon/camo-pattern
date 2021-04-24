@@ -15,8 +15,16 @@ export class Point {
         return this._x;
     }
 
+    set x(val) {
+        this._x = val
+    }
+
     get y(): number {
         return this._y;
+    }
+
+    set y(val) {
+        this._y = val
     }
 
     public dist(another: Point): number {

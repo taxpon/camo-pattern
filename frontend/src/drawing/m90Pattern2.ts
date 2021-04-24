@@ -7,22 +7,25 @@ import {Circle} from "../geometry/circle";
 import {Util} from "../util";
 import {Triangle} from "../geometry/triangle";
 import {StateKey} from "../model/stateKey";
+import Timeout = NodeJS.Timeout;
 
 export class M90Pattern2 extends BaseLogic {
 
-
+    private points: Array<Point>
+    private triangles: Array<Triangle>
+    private interval: Timeout
 
     public draw(width: number, height: number) {
-        let points = [
+        this.points = []
+        this.points.concat([
             new Point(0, 0),
             new Point(width, 0),
             new Point(0, height),
             new Point(width, height)
-        ]
-
+        ])
         let numPoints = State.getState(StateKey.NUM_POINTS) - 1
         Util.range(0, numPoints).forEach(_ => {
-            points.push(new Point(Math.random() * width, Math.random() * height))
+            this.points.push(new Point(Math.random() * width, Math.random() * height))
         })
 
         // Circumcircle
@@ -38,7 +41,7 @@ export class M90Pattern2 extends BaseLogic {
 
         let colIter = Color.colorGeneratorFromPalette(State.getState(StateKey.PALETTE, "green"));
         let triangles = [baseTriangle]
-        points.forEach((p, k) => {
+        this.points.forEach((p, k) => {
             let edges = []
             // this.drawCircle(new Circle(p, 10, "red"))
             triangles.forEach((triangle, i) => {
@@ -63,7 +66,27 @@ export class M90Pattern2 extends BaseLogic {
                 })
         })
 
-        triangles.forEach(triangle => {
+        this.triangles = triangles
+        this.triangles.forEach(triangle => {
+            this.drawPolygon(triangle)
+        })
+    }
+
+    public startAnimate() {
+        this.interval = setInterval(this.animate.bind(this), 50)
+    }
+
+    public stopAnimate() {
+        clearInterval(this.interval)
+    }
+
+    public animate() {
+        const factor = 2
+        this.points.forEach((point, i) => {
+            this.points[i].x += (Math.random() - 0.5) * factor;
+            this.points[i].y += (Math.random() - 0.5) * factor;
+        })
+        this.triangles.forEach(triangle => {
             this.drawPolygon(triangle)
         })
     }

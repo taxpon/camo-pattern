@@ -5,6 +5,10 @@ import {Polygon} from "../geometry/polygon";
 import {Point} from "../geometry/point";
 
 export class M90Pattern1 extends BaseLogic {
+    startAnimate() {
+    }
+    stopAnimate() {
+    }
 
     public draw(width: number, height: number) {
         let colIter = Color.colorGeneratorFromPalette(State.getState("palette", "green"));

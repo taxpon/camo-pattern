@@ -4,6 +4,8 @@ import {Circle} from "../geometry/circle";
 export abstract class BaseLogic {
     constructor(private ctx) {}
     abstract draw(width: number, height: number)
+    abstract startAnimate()
+    abstract stopAnimate()
 
     protected drawCircle(circle: Circle) {
         this.ctx.fillStyle = circle.color;

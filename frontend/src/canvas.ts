@@ -1,5 +1,5 @@
 import { State } from "./model/state";
-import { StateKey } from "./model/stateKey";
+import {StateKey, StateKeyType} from "./model/stateKey";
 import {Color} from "./color";
 import {BaseLogic} from "./drawing/baseLogic";
 import {M90Pattern1} from "./drawing/m90Pattern1";
@@ -24,7 +24,7 @@ export class Canvas {
         window.onresize = this.redrawHandler.bind(this)
         State.registerCallback(this.redrawHandler.bind(this))
         // Initial Draw
-        this.redrawHandler();
+        this.redrawHandler(null, null, null);
     }
 
     public reDraw() {
@@ -33,14 +33,22 @@ export class Canvas {
         this.draw();
     }
 
-    private redrawHandler(state?: State) {
-        this.width = document.documentElement.clientWidth;
-        this.height = document.documentElement.clientHeight;
-        this.canvas.setAttribute("width", this.width.toString());
-        this.canvas.setAttribute("height", this.height.toString());
-        this.ctx.fillStyle = Color.getBaseColorFromPalette(State.getState(StateKey.PALETTE));
-        this.ctx.fillRect(0, 0, this.width, this.height);
-        this.draw();
+    private redrawHandler(state: State, key: StateKeyType, value: any) {
+        if (key === StateKey.ANIMATE) {
+            if (value) {
+                this.logics[State.getState("pattern")].startAnimate();
+            } else {
+                this.logics[State.getState("pattern")].stopAnimate();
+            }
+        } else {
+            this.width = document.documentElement.clientWidth;
+            this.height = document.documentElement.clientHeight;
+            this.canvas.setAttribute("width", this.width.toString());
+            this.canvas.setAttribute("height", this.height.toString());
+            this.ctx.fillStyle = Color.getBaseColorFromPalette(State.getState(StateKey.PALETTE));
+            this.ctx.fillRect(0, 0, this.width, this.height);
+            this.draw();
+        }
     }
 
     public draw() {

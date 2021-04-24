@@ -16,20 +16,18 @@ body {
   padding: 10px;
   border: 3px dashed gray;
   background: rgba(128, 128, 128, 0.3);
+  
+  .button {
+    background: grey;
+    margin: 10px;
+    padding: 10px 20px;
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+    border: 3px solid #666;
 
-  .ui-buttons {
-    .ui-button {
-      background: grey;
-      margin: 10px;
-      padding: 10px 20px;
-      display: inline-block;
-      cursor: pointer;
-      user-select: none;
-      border: 3px solid #666;
-
-      &:hover {
-        background: lightgray;
-      }
+    &:hover {
+      background: lightgray;
     }
   }
 

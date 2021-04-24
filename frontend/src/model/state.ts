@@ -1,11 +1,11 @@
 import {StateKeyType} from "./stateKey";
 
-type Callback = (state: State) => void;
+type Callback = (state: State, key:StateKeyType, value: any) => void;
 
 export class State {
 
     private static _instance: State;
-    private static _callbacks: Set<(state?: State) => void> = new Set();
+    private static _callbacks: Set<Callback> = new Set();
 
     private constructor() {}
 
@@ -26,7 +26,7 @@ export class State {
             return;
         }
         State._callbacks.forEach((callback) => {
-            callback(this)
+            callback(this, key, value)
         })
     }
 
