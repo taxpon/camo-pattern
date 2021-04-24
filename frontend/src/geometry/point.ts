@@ -4,12 +4,29 @@ export class Point {
 
     private static _cache: {[id: string]: Point} = {}
 
-    constructor(private x: number, private y: number) {
+    constructor(private _x: number, private _y: number) {
     }
 
     get coord(): [number, number] {
-        return [this.x, this.y]
+        return [this._x, this._y]
     }
+
+    get x(): number {
+        return this._x;
+    }
+
+    get y(): number {
+        return this._y;
+    }
+
+    public dist(another: Point): number {
+        return Math.sqrt(Math.pow(this.x - another.x, 2) + Math.pow(this.y - another.y, 2))
+    }
+
+    public equals(another: Point): boolean {
+        return this.x === another.x && this.y === another.y
+    }
+
     public static of(x: number, y: number): Point {
         let key = `${x},${y}`;
         if (this._cache[key] === undefined) {

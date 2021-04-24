@@ -3,6 +3,7 @@ import { StateKey } from "./model/stateKey";
 import {Color} from "./color";
 import {BaseLogic} from "./drawing/baseLogic";
 import {M90Pattern1} from "./drawing/m90Pattern1";
+import {M90Pattern2} from "./drawing/m90Pattern2";
 
 export class Canvas {
     private canvas: HTMLCanvasElement;
@@ -16,7 +17,8 @@ export class Canvas {
         this.canvas = document.getElementById("canvas") as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d');
         this.logics = {
-            "m90p1": new M90Pattern1(this.ctx)
+            "m90p1": new M90Pattern1(this.ctx),
+            "m90p2": new M90Pattern2(this.ctx)
         }
         // Register Handler
         window.onresize = this.redrawHandler.bind(this)
