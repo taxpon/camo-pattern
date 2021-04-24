@@ -1,9 +1,9 @@
 import { Canvas } from "./canvas";
 import "./style.scss";
-import {State} from "./state";
+import {State} from "./model/state";
+import {StateKey} from "./model/stateKey";
 
 window.onload = () => {
-    let c = new Canvas();
     let download = document.getElementById("download");
     download.onclick = (e) => {
         let canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -20,13 +20,27 @@ window.onload = () => {
         c.reDraw();
     }
 
+    let form = document.getElementById("controls-values");
+    State.setState(StateKey.PATTERN, form["camo-pattern"].value);
+    State.setState(StateKey.PALETTE, form["color-palette"].value);
+
+    let camoRadios = document.querySelectorAll("#camo-pattern input[type=radio]");
+    camoRadios.forEach((elem: HTMLInputElement) => {
+        elem.onclick = () => {
+            if (State.getState(StateKey.PATTERN) != elem.value) {
+                State.setState(StateKey.PATTERN, elem.value);
+            }
+        }
+    })
+
     let colorRadios = document.querySelectorAll("#color-palette input[type=radio]");
     colorRadios.forEach((elem: HTMLInputElement) => {
         elem.onclick = () => {
-            if (State.getState("palette", "green") != elem.value) {
-                State.setState("palette", elem.value);
+            if (State.getState(StateKey.PALETTE) != elem.value) {
+                State.setState(StateKey.PALETTE, elem.value);
             }
-
         }
     })
+
+    let c = new Canvas();
 };

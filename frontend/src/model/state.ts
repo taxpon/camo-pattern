@@ -1,3 +1,4 @@
+import {StateKeyType} from "./stateKey";
 
 type Callback = (state: State) => void;
 
@@ -15,11 +16,11 @@ export class State {
         return  this._instance;
     }
 
-    static getState(key: string, defaultValue: string = undefined) {
+    static getState(key: StateKeyType, defaultValue: string = undefined) {
         return this.getInstance()[key] || defaultValue
     }
 
-    static setState(key: string, value: any, triggerUpdate: boolean = true) {
+    static setState(key: StateKeyType, value: any, triggerUpdate: boolean = true) {
         this.getInstance()[key] = value;
         if (!triggerUpdate) {
             return;

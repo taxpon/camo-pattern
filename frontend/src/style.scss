@@ -33,19 +33,19 @@ body {
     }
   }
 
-  #color-palette {
+  .controls-section {
     //border: 3px dashed gray;
     margin: 10px;
+
+    .controls-section-title {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
 
     label {
       user-select: none;
       cursor: pointer;
     }
-  }
-
-  .controls-section-title {
-    margin-bottom: 10px;
-    font-weight: bold;
   }
 }
 

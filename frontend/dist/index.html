@@ -14,16 +14,22 @@
 <body>
 <div class="ui-wrapper">
     <div class="controls">
-        <div class="ui-buttons">
-            <a id="refresh" class="ui-button">Refresh</a>
-            <a id="download" class="ui-button">Download</a>
-        </div>
-        <div id="color-palette">
-            <div class="controls-section-title">Color Palette</div>
-            <label><input name="color-palette" type="radio" value="green" checked>Green</label>
-            <label><input name="color-palette" type="radio" value="blue">Blue</label>
-            <label><input name="color-palette" type="radio" value="desert">Desert</label>
-        </div>
+        <form id="controls-values">
+            <div class="ui-buttons">
+                <a id="refresh" class="ui-button">Refresh</a>
+                <a id="download" class="ui-button">Download</a>
+            </div>
+            <div id="camo-pattern" class="controls-section">
+                <div class="controls-section-title">Camo Pattern</div>
+                <label><input name="camo-pattern" type="radio" value="m90p1" checked>M90(1)</label>
+            </div>
+            <div id="color-palette" class="controls-section">
+                <div class="controls-section-title">Color Palette</div>
+                <label><input name="color-palette" type="radio" value="green" checked>Green</label>
+                <label><input name="color-palette" type="radio" value="blue">Blue</label>
+                <label><input name="color-palette" type="radio" value="desert">Desert</label>
+            </div>
+        </form>
     </div>
 </div>
 <canvas id="canvas"></canvas>
