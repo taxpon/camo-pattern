@@ -23,6 +23,9 @@ export class Polygon {
     get key(): string {
         return this.points.map(p => p.key).join("/")
     }
+    get keyIndex(): string {
+        return this.points.map(p => p.keyIndex.toString()).join("/")
+    }
 
     public equals(another: Polygon) {
         if (this.points.length != another.points.length) {

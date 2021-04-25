@@ -5,12 +5,23 @@ export class Edge {
     private readonly _end: Point
 
     constructor(p1: Point, p2: Point) {
-        if (p1.x <= p2.x) {
-            this._start = p1
-            this._end = p2
-        } else {
-            this._start = p2
-            this._end = p1
+        if (p1.hasIndex && p2.hasIndex) {
+            if (p1.keyIndex < p2.keyIndex) {
+                this._start = p1
+                this._end = p2
+            } else {
+                this._start = p2
+                this._end = p1
+            }
+        }
+        else {
+            if (p1.x <= p2.x) {
+                this._start = p1
+                this._end = p2
+            } else {
+                this._start = p2
+                this._end = p1
+            }
         }
     }
 
@@ -24,6 +35,10 @@ export class Edge {
 
     get key() {
         return `${this.start.key}/${this.end.key}`
+    }
+
+    get keyIndex(): string {
+        return `${this.start.keyIndex}-${this.end.keyIndex}`
     }
 
 

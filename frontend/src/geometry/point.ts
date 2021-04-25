@@ -4,7 +4,7 @@ export class Point {
 
     private static _cache: {[id: string]: Point} = {}
 
-    constructor(private _x: number, private _y: number) {
+    constructor(private _x: number, private _y: number, private _index: number = null) {
     }
 
     get coord(): [number, number] {
@@ -29,6 +29,14 @@ export class Point {
 
     get key(): string {
         return `${this.x},${this.y}`
+    }
+
+    get hasIndex(): boolean {
+        return !!this._index
+    }
+
+    get keyIndex(): number {
+        return this._index
     }
 
     public dist(another: Point): number {

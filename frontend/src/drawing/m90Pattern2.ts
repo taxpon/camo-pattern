@@ -21,14 +21,15 @@ export class M90Pattern2 extends BaseLogic {
     public draw(width: number, height: number) {
         this.points = []
         this.points.concat([
-            new Point(0, 0),
-            new Point(width, 0),
-            new Point(0, height),
-            new Point(width, height)
+            new Point(0, 0, 0),
+            new Point(width, 0, 1),
+            new Point(0, height, 2),
+            new Point(width, height, 3)
         ])
         let numPoints = State.getState(StateKey.NUM_POINTS) - 1
-        Util.range(0, numPoints).forEach(_ => {
-            this.points.push(new Point(Math.random() * width, Math.random() * height))
+        Util.range(0, numPoints).forEach((_, i) => {
+            const index = i + this.points.length
+            this.points.push(new Point(Math.random() * width, Math.random() * height, index))
         })
 
         // Circumcircle
@@ -37,9 +38,9 @@ export class M90Pattern2 extends BaseLogic {
         this.drawCircle(new Circle(center, r, "rgba(1, 1, 1, 0)"))
 
         // Circumtriangle
-        const p1 = new Point(center.x - Math.sqrt(3) * r,center.y - r)
-        const p2 = new Point(center.x + Math.sqrt(3) * r,center.y - r)
-        const p3 = new Point(center.x,center.y + r * 2)
+        const p1 = new Point(center.x - Math.sqrt(3) * r,center.y - r, this.points.length)
+        const p2 = new Point(center.x + Math.sqrt(3) * r,center.y - r, this.points.length)
+        const p3 = new Point(center.x,center.y + r * 2, this.points.length)
         const baseTriangle = new Triangle([p1, p2, p3], "pink")
 
         let colIter = Color.colorGeneratorFromPalette(State.getState(StateKey.PALETTE, "green"));
@@ -90,13 +91,10 @@ export class M90Pattern2 extends BaseLogic {
             this.points[i].y += (Math.random() - 0.5) * factor;
         })
 
-        // Point location is updated, so need to re-build edgeMap
-        this.buildEdgeMap()
-
         this.triangles.forEach(triangle => {
             if (this.isActiveTriangle(triangle)) {
                 this.drawPolygon(triangle, "red")
-            } else if (this.adjacentPolygons[triangle.key]) {
+            } else if (this.adjacentPolygons[triangle.keyIndex]) {
                this.drawPolygon(triangle, "blue")
             } else {
                 this.drawPolygon(triangle)
@@ -124,10 +122,10 @@ export class M90Pattern2 extends BaseLogic {
         this.edgeMap = {}
         this.triangles.forEach(triangle => {
             triangle.edges.forEach(e => {
-                if (this.edgeMap[e.key] === undefined) {
-                    this.edgeMap[e.key] = []
+                if (this.edgeMap[e.keyIndex] === undefined) {
+                    this.edgeMap[e.keyIndex] = []
                 }
-                this.edgeMap[e.key].push(triangle)
+                this.edgeMap[e.keyIndex].push(triangle)
             })
             this.drawPolygon(triangle)
         })
@@ -144,11 +142,11 @@ export class M90Pattern2 extends BaseLogic {
 
         // Update adjacent polygons
         for(let i = 0; i < triangle.edges.length; i++) {
-            const edgePolygons = this.edgeMap[triangle.edges[i].key]
+            const edgePolygons = this.edgeMap[triangle.edges[i].keyIndex]
             if (edgePolygons && edgePolygons.length > 1) {
                 edgePolygons.forEach(ep => {
                     if (!ep.equals(triangle)) {
-                        this.adjacentPolygons[ep.key] = ep
+                        this.adjacentPolygons[ep.keyIndex] = ep
                     }
                 })
             }
