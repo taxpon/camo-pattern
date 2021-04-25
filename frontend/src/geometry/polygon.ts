@@ -20,6 +20,9 @@ export class Polygon {
     get color() {
         return this._color;
     }
+    set color(val: string) {
+        this._color = val
+    }
     get key(): string {
         return this.points.map(p => p.key).join("/")
     }

@@ -14,18 +14,29 @@ export class M90Pattern2 extends BaseLogic {
     private points: Array<Point>
     private triangles: Array<Triangle>
     private edgeMap: {[key: string]: Array<Polygon>}
+    private visitMap: {[key: string]: boolean}
+
+    // For mouse interaction
     private activeTriangle = new Array<Triangle>(2)  // Current, Prev
     private adjacentPolygons: {[key: string]: Polygon}
+
+    // For animation
     private interval: Timeout
 
     public draw(width: number, height: number) {
         this.points = []
-        this.points.concat([
-            new Point(0, 0, 0),
-            new Point(width, 0, 1),
-            new Point(0, height, 2),
-            new Point(width, height, 3)
-        ])
+
+        const unit = 100
+        const xGrid = Math.ceil(width / unit)
+        const yGrid = Math.ceil(height / unit)
+        for(let i = 0; i < xGrid + 1; i++) {
+            for(let j = 0; j < yGrid + 1; j++) {
+                this.points.push(new Point(
+                    (width / xGrid) * i, (height / yGrid) * j, i * 10 + j
+                ))
+            }
+        }
+
         let numPoints = State.getState(StateKey.NUM_POINTS) - 1
         Util.range(0, numPoints).forEach((_, i) => {
             const index = i + this.points.length
@@ -66,14 +77,34 @@ export class M90Pattern2 extends BaseLogic {
                     }
                     return edge
                 })
-                .filter(x => x)
+                .filter(x   => x)
                 .forEach(edge => {
                     triangles.push(new Triangle([edge.start, edge.end, p], colIter.next().value))
                 })
         })
 
-        this.triangles = triangles
+        this.triangles = triangles.filter(x => x)
         this.buildEdgeMap()
+        this.visitMap = {}
+        this.makeCamouflage(this.triangles[300], "red", 5)
+    }
+
+    private makeCamouflage(triangle: Triangle, color: string, depth: number) {
+        triangle.color = color
+        this.drawPolygon(triangle, color)
+        if (depth == 0) {
+            return
+        }
+        triangle.edges.forEach((edge, j) => {
+            const adjacent = this.edgeMap[edge.keyIndex]
+                .filter(ep => !ep.equals(triangle))[0] as Triangle
+
+            if (adjacent && !this.visitMap[adjacent.keyIndex]) {
+                if (Math.random() < 0.1 * depth) {
+                    this.makeCamouflage(adjacent, color, depth - 1)
+                }
+            }
+        })
     }
 
     public startAnimate() {
