@@ -19,7 +19,14 @@ export class Color {
             "#72625D",
             "#A69887",
             "#6D4C2D"
-        ]
+        ],
+        "orange": [
+            "#FF824D",
+            "#782400",
+            "#F74A00",
+            "#7A442C",
+            "#C73B00"
+        ],
     }
 
     private static range = (start: number, end: number) => Array.from({length: (end - start + 1)}, (v, k) => k + start);
