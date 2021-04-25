@@ -35,6 +35,12 @@ export class Point {
         return this.x === another.x && this.y === another.y
     }
 
+    public div(a: number): Point {
+        this.x /= a
+        this.y /= a
+        return this
+    }
+
     public static of(x: number, y: number): Point {
         let key = `${x},${y}`;
         if (this._cache[key] === undefined) {

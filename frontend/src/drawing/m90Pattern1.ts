@@ -9,6 +9,8 @@ export class M90Pattern1 extends BaseLogic {
     }
     stopAnimate() {
     }
+    handleMouseMove(p: Point) {
+    }
 
     public draw(width: number, height: number) {
         let colIter = Color.colorGeneratorFromPalette(State.getState("palette", "green"));

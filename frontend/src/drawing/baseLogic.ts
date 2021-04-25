@@ -1,11 +1,13 @@
 import {Polygon} from "../geometry/polygon";
 import {Circle} from "../geometry/circle";
+import {Point} from "../geometry/point";
 
 export abstract class BaseLogic {
     constructor(private ctx) {}
     abstract draw(width: number, height: number)
     abstract startAnimate()
     abstract stopAnimate()
+    abstract handleMouseMove(p: Point)
 
     protected drawCircle(circle: Circle) {
         this.ctx.fillStyle = circle.color;
@@ -17,9 +19,15 @@ export abstract class BaseLogic {
         this.ctx.fill();
     }
 
-    protected drawPolygon(poly: Polygon) {
-        this.ctx.fillStyle = poly.color;
-        this.ctx.strokeStyle = poly.color;
+    protected drawPolygon(poly: Polygon, color: string = undefined) {
+        if (color) {
+            this.ctx.fillStyle = color;
+            this.ctx.strokeStyle = color;
+        } else {
+            this.ctx.fillStyle = poly.color;
+            this.ctx.strokeStyle = poly.color;
+        }
+
         this.ctx.beginPath();
         poly.points.forEach((val, index) => {
             if (index === 0) {

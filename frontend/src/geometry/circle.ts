@@ -12,7 +12,7 @@ export class Circle {
     get color() {
         return this._color;
     }
-    public isIncluding(p: Point): boolean {
+    public isContaining(p: Point): boolean {
         return this.center.dist(p) < this.radius
     }
 }

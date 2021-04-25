@@ -2,6 +2,7 @@ import { Canvas } from "./canvas";
 import "./style.scss";
 import {State} from "./model/state";
 import {StateKey} from "./model/stateKey";
+import {Point} from "./geometry/point";
 
 window.onload = () => {
     let download = document.getElementById("download");
@@ -66,6 +67,13 @@ window.onload = () => {
             }
         }
     })
+
+    window.onmousemove = (e) => {
+        if (!State.getState(StateKey.MOUSE_POS) ||
+            !(State.getState(StateKey.MOUSE_POS) as Point).equals(Point.of(e.clientX, e.clientY))) {
+            State.setState(StateKey.MOUSE_POS, Point.of(e.clientX, e.clientY));
+        }
+    }
 
     let c = new Canvas();
 };

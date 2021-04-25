@@ -34,7 +34,7 @@ export class Color {
 
     public static * colorGenerator(colors: string[]): IterableIterator<string> {
         for (;;) {
-            let indices = this.range(0, colors.length)
+            let indices = this.range(0, colors.length - 1)
             for (let i = indices.length; 1 < i; i--) {
                 let k = Math.floor(Math.random() * i);
                 [indices[k], indices[i - 1]] = [indices[i - 1], indices[k]];
