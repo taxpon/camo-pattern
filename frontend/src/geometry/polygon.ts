@@ -20,6 +20,9 @@ export class Polygon {
     get color() {
         return this._color;
     }
+    get key(): string {
+        return this.points.map(p => p.key).join("/")
+    }
 
     public equals(another: Polygon) {
         if (this.points.length != another.points.length) {

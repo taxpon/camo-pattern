@@ -27,6 +27,10 @@ export class Point {
         this._y = val
     }
 
+    get key(): string {
+        return `${this.x},${this.y}`
+    }
+
     public dist(another: Point): number {
         return Math.sqrt(Math.pow(this.x - another.x, 2) + Math.pow(this.y - another.y, 2))
     }

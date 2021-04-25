@@ -7,12 +7,15 @@ import {Util} from "../util";
 import {Triangle} from "../geometry/triangle";
 import {StateKey} from "../model/stateKey";
 import Timeout = NodeJS.Timeout;
+import {Polygon} from "../geometry/polygon";
 
 export class M90Pattern2 extends BaseLogic {
 
     private points: Array<Point>
     private triangles: Array<Triangle>
+    private edgeMap: {[key: string]: Array<Polygon>}
     private activeTriangle = new Array<Triangle>(2)  // Current, Prev
+    private adjacentPolygons: {[key: string]: Polygon}
     private interval: Timeout
 
     public draw(width: number, height: number) {
@@ -69,9 +72,7 @@ export class M90Pattern2 extends BaseLogic {
         })
 
         this.triangles = triangles
-        this.triangles.forEach(triangle => {
-            this.drawPolygon(triangle)
-        })
+        this.buildEdgeMap()
     }
 
     public startAnimate() {
@@ -88,9 +89,15 @@ export class M90Pattern2 extends BaseLogic {
             this.points[i].x += (Math.random() - 0.5) * factor;
             this.points[i].y += (Math.random() - 0.5) * factor;
         })
+
+        // Point location is updated, so need to re-build edgeMap
+        this.buildEdgeMap()
+
         this.triangles.forEach(triangle => {
             if (this.isActiveTriangle(triangle)) {
                 this.drawPolygon(triangle, "red")
+            } else if (this.adjacentPolygons[triangle.key]) {
+               this.drawPolygon(triangle, "blue")
             } else {
                 this.drawPolygon(triangle)
             }
@@ -106,6 +113,24 @@ export class M90Pattern2 extends BaseLogic {
                 this.drawPolygon(triangle)
             }
         })
+
+        // Overwrite adjacent polygons
+        Object.keys(this.adjacentPolygons).forEach(k => {
+            this.drawPolygon(this.adjacentPolygons[k], "blue")
+        })
+    }
+
+    private buildEdgeMap() {
+        this.edgeMap = {}
+        this.triangles.forEach(triangle => {
+            triangle.edges.forEach(e => {
+                if (this.edgeMap[e.key] === undefined) {
+                    this.edgeMap[e.key] = []
+                }
+                this.edgeMap[e.key].push(triangle)
+            })
+            this.drawPolygon(triangle)
+        })
     }
 
     private updateActiveTriangle(triangle: Triangle) {
@@ -115,6 +140,19 @@ export class M90Pattern2 extends BaseLogic {
         }
         this.activeTriangle[1] = this.activeTriangle[0]
         this.activeTriangle[0] = triangle
+        this.adjacentPolygons = {}
+
+        // Update adjacent polygons
+        for(let i = 0; i < triangle.edges.length; i++) {
+            const edgePolygons = this.edgeMap[triangle.edges[i].key]
+            if (edgePolygons && edgePolygons.length > 1) {
+                edgePolygons.forEach(ep => {
+                    if (!ep.equals(triangle)) {
+                        this.adjacentPolygons[ep.key] = ep
+                    }
+                })
+            }
+        }
     }
 
     private isActiveTriangle(triangle: Triangle) {
