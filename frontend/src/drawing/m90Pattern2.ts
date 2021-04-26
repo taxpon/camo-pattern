@@ -8,6 +8,7 @@ import {Triangle} from "../geometry/triangle";
 import {StateKey} from "../model/stateKey";
 import Timeout = NodeJS.Timeout;
 import {Polygon} from "../geometry/polygon";
+import {IndexGenerator} from "../util/indexGenerator";
 
 export class M90Pattern2 extends BaseLogic {
 
@@ -23,24 +24,34 @@ export class M90Pattern2 extends BaseLogic {
     // For animation
     private interval: Timeout
 
+    constructor(ctx) {
+        super(ctx);
+        window.onmousedown =  this.debugAdjacent.bind(this)
+    }
+
+    private debugAdjacent() {
+        console.log(this.adjacentPolygons)
+    }
+
     public draw(width: number, height: number) {
         this.points = []
-
         const unit = 100
         const xGrid = Math.ceil(width / unit)
         const yGrid = Math.ceil(height / unit)
+
+        IndexGenerator.reset()
+
         for(let i = 0; i < xGrid + 1; i++) {
             for(let j = 0; j < yGrid + 1; j++) {
                 this.points.push(new Point(
-                    (width / xGrid) * i, (height / yGrid) * j, i * 10 + j
+                    (width / xGrid) * i, (height / yGrid) * j, IndexGenerator.incrementAndGet()
                 ))
             }
         }
 
         let numPoints = State.getState(StateKey.NUM_POINTS) - 1
         Util.range(0, numPoints).forEach((_, i) => {
-            const index = i + this.points.length
-            this.points.push(new Point(Math.random() * width, Math.random() * height, index))
+            this.points.push(new Point(Math.random() * width, Math.random() * height, IndexGenerator.incrementAndGet()))
         })
 
         // Circumcircle
@@ -49,9 +60,9 @@ export class M90Pattern2 extends BaseLogic {
         this.drawCircle(new Circle(center, r, "rgba(1, 1, 1, 0)"))
 
         // Circumtriangle
-        const p1 = new Point(center.x - Math.sqrt(3) * r,center.y - r, this.points.length)
-        const p2 = new Point(center.x + Math.sqrt(3) * r,center.y - r, this.points.length)
-        const p3 = new Point(center.x,center.y + r * 2, this.points.length)
+        const p1 = new Point(center.x - Math.sqrt(3) * r,center.y - r, IndexGenerator.incrementAndGet())
+        const p2 = new Point(center.x + Math.sqrt(3) * r,center.y - r, IndexGenerator.incrementAndGet())
+        const p3 = new Point(center.x,center.y + r * 2, IndexGenerator.incrementAndGet())
         const baseTriangle = new Triangle([p1, p2, p3], "pink")
 
         let colIter = Color.colorGeneratorFromPalette(State.getState(StateKey.PALETTE, "green"));
@@ -86,7 +97,7 @@ export class M90Pattern2 extends BaseLogic {
         this.triangles = triangles.filter(x => x)
         this.buildEdgeMap()
         this.visitMap = {}
-        this.makeCamouflage(this.triangles[300], "red", 5)
+        this.makeCamouflage(this.triangles[300], "red", 3)
     }
 
     private makeCamouflage(triangle: Triangle, color: string, depth: number) {
@@ -100,9 +111,9 @@ export class M90Pattern2 extends BaseLogic {
                 .filter(ep => !ep.equals(triangle))[0] as Triangle
 
             if (adjacent && !this.visitMap[adjacent.keyIndex]) {
-                if (Math.random() < 0.1 * depth) {
+                // if (Math.random() < 0.1 * depth) {
                     this.makeCamouflage(adjacent, color, depth - 1)
-                }
+                // }
             }
         })
     }
