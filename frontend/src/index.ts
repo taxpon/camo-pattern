@@ -25,6 +25,7 @@ window.onload = () => {
     State.setState(StateKey.PATTERN, form["camo-pattern"].value);
     State.setState(StateKey.PALETTE, form["color-palette"].value);
     State.setState(StateKey.NUM_POINTS, form["num-points"].value);
+    State.setState(StateKey.CAMO_DEPTH, form["camo-depth"].value);
     State.setState(StateKey.ANIMATE, false);
 
     let camoRadios = document.querySelectorAll("#camo-pattern input[type=radio]");
@@ -44,6 +45,16 @@ window.onload = () => {
             State.setState(StateKey.NUM_POINTS, camoSlider.value)
         }
     }
+
+    let depthSlider = document.querySelector("#camo-pattern input[name=camo-depth]") as HTMLInputElement;
+    let depthSliderIndicator = document.getElementById("camo-depth-val");
+    depthSlider.onchange = _ => {
+        depthSliderIndicator.textContent = depthSlider.value
+        if (State.getState(StateKey.CAMO_DEPTH) != depthSlider.value) {
+            State.setState(StateKey.CAMO_DEPTH, depthSlider.value)
+        }
+    }
+
 
     let startAnimate = document.getElementById("start-animate");
     startAnimate.onclick = _ => {

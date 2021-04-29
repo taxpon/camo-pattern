@@ -14,6 +14,8 @@ export class M90Pattern2 extends BaseLogic {
 
     private points: Array<Point>
     private triangles: Array<Triangle>
+    private triangleAreas: Array<number>
+    private triangleAreaMedian: number
     private edgeMap: {[key: string]: Array<Polygon>}
     private visitMap: {[key: string]: boolean}
 
@@ -30,12 +32,12 @@ export class M90Pattern2 extends BaseLogic {
     }
 
     private debugAdjacent() {
-        console.log(this.adjacentPolygons)
+        console.log(this.adjacentPolygons, this.activeTriangle[0].area)
     }
 
     public draw(width: number, height: number) {
         this.points = []
-        const unit = 100
+        const unit = 500
         const xGrid = Math.ceil(width / unit)
         const yGrid = Math.ceil(height / unit)
 
@@ -95,27 +97,57 @@ export class M90Pattern2 extends BaseLogic {
         })
 
         this.triangles = triangles.filter(x => x)
+        this.triangleAreas = this.triangles.map(t => t.area).sort((a, b) => a - b);
+        this.triangleAreaMedian = this.triangleAreas[Math.floor(this.triangleAreas.length / 2)]
+
         this.buildEdgeMap()
         this.visitMap = {}
-        this.makeCamouflage(this.triangles[300], "red", 3)
+
+        for (let i = 0; i < this.triangles.length; i++) {
+            const triangle = this.triangles[i]
+            if (this.visitMap[triangle.keyIndex]) {
+                continue
+            }
+            this.makeCamouflage(triangle, colIter.next().value, State.getState(StateKey.CAMO_DEPTH))
+        }
     }
 
-    private makeCamouflage(triangle: Triangle, color: string, depth: number) {
+    private makeCamouflage(triangle: Triangle, color: string, depth: number, originalDepth: number = null) {
+        originalDepth = originalDepth || depth
         triangle.color = color
         this.drawPolygon(triangle, color)
+        this.visitMap[triangle.keyIndex] = true
         if (depth == 0) {
             return
         }
+        let alone = depth === originalDepth
+        let version = "v2"
+
         triangle.edges.forEach((edge, j) => {
             const adjacent = this.edgeMap[edge.keyIndex]
                 .filter(ep => !ep.equals(triangle))[0] as Triangle
 
             if (adjacent && !this.visitMap[adjacent.keyIndex]) {
-                // if (Math.random() < 0.1 * depth) {
-                    this.makeCamouflage(adjacent, color, depth - 1)
-                // }
+                alone = false
+                if (version === "v1") {
+                    if (Math.random() < (depth / originalDepth)) {
+                        this.makeCamouflage(adjacent, color, depth - 1, originalDepth)
+                    }
+                } else if (version === "v2") {
+                    if (adjacent.area < 5000) { // this.triangleAreaMedian) {
+                        this.makeCamouflage(adjacent, color, depth - 1, originalDepth)
+                    } else {
+                        if (Math.random() < (depth / originalDepth)) {
+                            this.makeCamouflage(adjacent, color, depth - 1, originalDepth)
+                        }
+                    }
+                }
             }
         })
+        if (alone) {
+            console.log("I am alone", triangle, triangle.area)
+        }
+
     }
 
     public startAnimate() {

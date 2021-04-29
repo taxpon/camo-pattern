@@ -5,6 +5,7 @@ import {Edge} from "./edge";
 
 export class Triangle extends Polygon{
 
+    private _area: number
     private _edges: Array<Edge>
     private _circumcircle: Circle;
 
@@ -15,7 +16,20 @@ export class Triangle extends Polygon{
         super(_points, _color);
     }
 
-    get edges(){
+    get area(): number {
+        if (!this._area) {
+            this._area = Math.abs(
+                0.5 *
+                (
+                    this.points[0].x * (this.points[1].y - this.points[2].y)
+                    + this.points[1].x * (this.points[2].y - this.points[0].y)
+                    + this.points[2].x * (this.points[0].y - this.points[1].y))
+            )
+        }
+        return this._area
+    }
+
+    get edges(): Array<Edge> {
         if(!this._edges){
             this._edges = [];
             this._edges.push(new Edge(this.points[0],this.points[1]));

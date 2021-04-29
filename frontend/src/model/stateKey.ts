@@ -3,7 +3,8 @@ export const StateKey = {
     PALETTE: "palette",
     NUM_POINTS: "num-points",
     ANIMATE: "animate",
-    MOUSE_POS: "mouse-pos"
+    MOUSE_POS: "mouse-pos",
+    CAMO_DEPTH: "camo-depth"
 } as const
 
 export type StateKeyType = typeof StateKey[keyof typeof StateKey];
