@@ -27,6 +27,17 @@ export class Color {
             "#7A442C",
             "#C73B00"
         ],
+        "uc1": [
+            // https://store.undercoverism.com/undercovermen/item/detail/1_1_UC1A4508-4_1/Q02
+            "#C4B9B5",
+            "#683A31",
+            "#4A5F56"
+        ],
+        "uc2": [
+            "#262527",
+            "#513A3E",
+            "#424B50"
+        ]
     }
 
     private static range = (start: number, end: number) => Array.from({length: (end - start + 1)}, (v, k) => k + start);
