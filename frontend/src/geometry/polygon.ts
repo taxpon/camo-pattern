@@ -7,7 +7,7 @@ export class Polygon {
     private maxX: number
     private maxY: number
 
-    constructor(private _points: Array<Point>, private _color: string) {
+    constructor(private _points: Array<Point>, private _color: string, private _strokeColor: string = undefined) {
         this._center = this._points.reduce((prev, cur, i, arr) => {
             return new Point(prev.x + cur.x, prev.y + cur.y);
         }).div(this._points.length)
@@ -22,6 +22,12 @@ export class Polygon {
     }
     set color(val: string) {
         this._color = val
+    }
+    get strokeColor() {
+        return this._strokeColor
+    }
+    set strokeColor(val: string) {
+        this._strokeColor = val
     }
     get key(): string {
         return this.points.map(p => p.key).join("/")

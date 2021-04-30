@@ -17,7 +17,7 @@ export class M90Pattern2 extends BaseLogic {
     private triangleAreas: Array<number>
     private triangleAreaMedian: number
     private edgeMap: {[key: string]: Array<Polygon>}
-    private visitMap: {[key: string]: boolean}
+    private visitMap: {[key: string]: string}
 
     // For mouse interaction
     private activeTriangle = new Array<Triangle>(2)  // Current, Prev
@@ -116,16 +116,21 @@ export class M90Pattern2 extends BaseLogic {
         originalDepth = originalDepth || depth
         triangle.color = color
         this.drawPolygon(triangle, color)
-        this.visitMap[triangle.keyIndex] = true
+        this.visitMap[triangle.keyIndex] = color
         if (depth == 0) {
             return
         }
         let alone = depth === originalDepth
         let version = "v2"
+        let adjacentTriangles = []
 
         triangle.edges.forEach((edge, j) => {
             const adjacent = this.edgeMap[edge.keyIndex]
                 .filter(ep => !ep.equals(triangle))[0] as Triangle
+
+            if (adjacent) {
+                adjacentTriangles.push(adjacent)
+            }
 
             if (adjacent && !this.visitMap[adjacent.keyIndex]) {
                 alone = false
@@ -144,10 +149,14 @@ export class M90Pattern2 extends BaseLogic {
                 }
             }
         })
-        if (alone) {
-            console.log("I am alone", triangle, triangle.area)
-        }
 
+        if (alone) {
+            if (adjacentTriangles.length == 0) {
+            } else {
+                triangle.color = this.visitMap[adjacentTriangles[0].keyIndex]
+                this.drawPolygon(triangle, this.visitMap[adjacentTriangles[0].keyIndex])
+            }
+        }
     }
 
     public startAnimate() {

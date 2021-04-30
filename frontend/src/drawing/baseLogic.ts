@@ -19,13 +19,13 @@ export abstract class BaseLogic {
         this.ctx.fill();
     }
 
-    protected drawPolygon(poly: Polygon, color: string = undefined) {
+    protected drawPolygon(poly: Polygon, color: string = undefined, strokeColor: string = undefined) {
         if (color) {
             this.ctx.fillStyle = color;
-            this.ctx.strokeStyle = color;
+            this.ctx.strokeStyle = strokeColor || color;
         } else {
             this.ctx.fillStyle = poly.color;
-            this.ctx.strokeStyle = poly.color;
+            this.ctx.strokeStyle = poly.strokeColor || poly.color;
         }
 
         this.ctx.beginPath();
