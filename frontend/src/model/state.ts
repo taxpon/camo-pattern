@@ -17,17 +17,32 @@ export class State {
     }
 
     static getState(key: StateKeyType, defaultValue: string = undefined) {
-        return this.getInstance()[key] || defaultValue
+        const current = this.getInstance()[key]
+        if (current === undefined || current === null) {
+            return defaultValue
+        } else {
+            return current
+        }
     }
 
-    static setState(key: StateKeyType, value: any, triggerUpdate: boolean = true) {
+    static setState(key: StateKeyType, value: any, triggerUpdate: boolean = true): any {
         this.getInstance()[key] = value;
         if (!triggerUpdate) {
-            return;
+            return value
         }
         State._callbacks.forEach((callback) => {
             callback(this, key, value)
         })
+        return value
+    }
+
+    static flipState(key: StateKeyType): boolean {
+        const current = State.getState(key)
+        if (typeof current !== "boolean") {
+            console.error("Failed to flip state due to invalid state type", current)
+        } else {
+            return State.setState(key, !current)
+        }
     }
 
     static registerCallback(callback: Callback) {

@@ -28,11 +28,6 @@ export class M90Pattern2 extends BaseLogic {
 
     constructor(ctx) {
         super(ctx);
-        window.onmousedown =  this.debugAdjacent.bind(this)
-    }
-
-    private debugAdjacent() {
-        console.log(this.adjacentPolygons, this.activeTriangle[0].area)
     }
 
     public draw(width: number, height: number) {
@@ -115,15 +110,17 @@ export class M90Pattern2 extends BaseLogic {
     private makeCamouflage(triangle: Triangle, color: string, depth: number, originalDepth: number = null) {
         originalDepth = originalDepth || depth
         triangle.color = color
-        this.drawPolygon(triangle, color)
+
         this.visitMap[triangle.keyIndex] = color
+
         if (depth == 0) {
+            this.drawPolygon(triangle, color)
             return
         }
+
         let alone = depth === originalDepth
         let version = "v2"
         let adjacentTriangles = []
-
         triangle.edges.forEach((edge, j) => {
             const adjacent = this.edgeMap[edge.keyIndex]
                 .filter(ep => !ep.equals(triangle))[0] as Triangle
@@ -152,10 +149,14 @@ export class M90Pattern2 extends BaseLogic {
 
         if (alone) {
             if (adjacentTriangles.length == 0) {
+                console.error("Failed to find adjacentTriangle")
             } else {
+                // Copy color from one of adjacent triangles
                 triangle.color = this.visitMap[adjacentTriangles[0].keyIndex]
-                this.drawPolygon(triangle, this.visitMap[adjacentTriangles[0].keyIndex])
+                this.drawPolygon(triangle, triangle.color, triangle.color)
             }
+        } else {
+            this.drawPolygon(triangle, color)
         }
     }
 
@@ -168,7 +169,7 @@ export class M90Pattern2 extends BaseLogic {
     }
 
     public animate() {
-        const factor = 2
+        const factor = 4
         this.points.forEach((point, i) => {
             this.points[i].x += (Math.random() - 0.5) * factor;
             this.points[i].y += (Math.random() - 0.5) * factor;
@@ -186,8 +187,12 @@ export class M90Pattern2 extends BaseLogic {
     }
 
     public handleMouseMove(p: Point) {
+        if (!State.getState(StateKey.MOUSE_INTERACTION)) {
+            return
+        }
+
         this.triangles.forEach(triangle => {
-            if (triangle.isContaining(p)) {
+            if (triangle.isContaining(p) && State.getState(StateKey.MOUSE_INTERACTION)) {
                 this.updateActiveTriangle(triangle)
                 this.drawPolygon(triangle, "red")
             } else {

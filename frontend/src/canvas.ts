@@ -46,6 +46,8 @@ export class Canvas {
         else if (key === StateKey.MOUSE_POS) {
             renderer.handleMouseMove(value as Point);
         }
+        else if (key === StateKey.MOUSE_INTERACTION || key === StateKey.ENABLE_CONTROL_PANEL) {
+        }
         else {
             this.width = document.documentElement.clientWidth;
             this.height = document.documentElement.clientHeight;

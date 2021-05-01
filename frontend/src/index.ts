@@ -27,6 +27,8 @@ window.onload = () => {
     State.setState(StateKey.NUM_POINTS, form["num-points"].value);
     State.setState(StateKey.CAMO_DEPTH, form["camo-depth"].value);
     State.setState(StateKey.ANIMATE, false);
+    State.setState(StateKey.MOUSE_INTERACTION, true);
+    State.setState(StateKey.ENABLE_CONTROL_PANEL, true);
 
     let camoRadios = document.querySelectorAll("#camo-pattern input[type=radio]");
     camoRadios.forEach((elem: HTMLInputElement) => {
@@ -83,6 +85,28 @@ window.onload = () => {
         if (!State.getState(StateKey.MOUSE_POS) ||
             !(State.getState(StateKey.MOUSE_POS) as Point).equals(Point.of(e.clientX, e.clientY))) {
             State.setState(StateKey.MOUSE_POS, Point.of(e.clientX, e.clientY));
+        }
+    }
+
+    // Keyboard
+    window.onkeydown = (e) => {
+        if (e.key === "m") {
+            State.flipState(StateKey.MOUSE_INTERACTION)
+        }
+        else if (e.key === "c") {
+            const enabled = State.flipState(StateKey.ENABLE_CONTROL_PANEL)
+            const elem = document.getElementById("camo-control-panel")
+            if (enabled) {
+                elem.style.display = "block"
+            } else {
+                elem.style.display = "none"
+            }
+        }
+        else if (e.key === "r") {
+            c.reDraw()
+        }
+        else if (e.key === "a") {
+            State.flipState(StateKey.ANIMATE)
         }
     }
 

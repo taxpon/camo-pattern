@@ -27,7 +27,6 @@ export abstract class BaseLogic {
             this.ctx.fillStyle = poly.color;
             this.ctx.strokeStyle = poly.strokeColor || poly.color;
         }
-
         this.ctx.beginPath();
         poly.points.forEach((val, index) => {
             if (index === 0) {
