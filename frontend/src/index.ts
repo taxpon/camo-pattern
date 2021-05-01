@@ -5,9 +5,9 @@ import {StateKey} from "./model/stateKey";
 import {Point} from "./geometry/point";
 
 window.onload = () => {
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     let download = document.getElementById("download");
     download.onclick = (e) => {
-        let canvas = document.getElementById("canvas") as HTMLCanvasElement;
         let link = document.createElement("a");
         document.body.appendChild(link)
         link.setAttribute('download', 'camo-pattern.png');
@@ -27,7 +27,7 @@ window.onload = () => {
     State.setState(StateKey.NUM_POINTS, form["num-points"].value);
     State.setState(StateKey.CAMO_DEPTH, form["camo-depth"].value);
     State.setState(StateKey.ANIMATE, false);
-    State.setState(StateKey.MOUSE_INTERACTION, true);
+    State.setState(StateKey.MOUSE_INTERACTION, false);
     State.setState(StateKey.ENABLE_CONTROL_PANEL, true);
 
     let camoRadios = document.querySelectorAll("#camo-pattern input[type=radio]");
@@ -88,9 +88,21 @@ window.onload = () => {
         }
     }
 
-    window.ontouchend = (e) => {
+    const tapToRefresh = document.getElementById("tap-to-refresh")
+    tapToRefresh.ontouchend = (e) => {
         c.reDraw()
         State.setState(StateKey.MOUSE_INTERACTION, false)
+    }
+
+    // Mobile UI interaction
+    const camoControlPanel = document.getElementById("camo-control-panel")
+    const openSettings = document.getElementById("open-settings")
+    const openSettingsOn = document.getElementById("open-settings-on")
+    const openSettingsOff = document.getElementById("open-settings-off")
+    openSettings.ontouchend = (e) => {
+        camoControlPanel.classList.toggle("activated")
+        openSettingsOn.classList.toggle("fade-out")
+        openSettingsOff.classList.toggle("fade-out")
     }
 
     // Keyboard

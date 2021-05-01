@@ -10,6 +10,8 @@
     <meta property="og:title" content="Camouflage Pattern JS" />
     <meta property="og:description" content="A Project for Camouflage Pattern Generation" />
     <meta property="og:image" content="https://raw.githubusercontent.com/taxpon/camo-pattern/master/docs/images/cover.jpg" />
+    <meta name="viewport" content="user-scalable=no">
+    <script src="https://kit.fontawesome.com/34f949793e.js" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="ui-wrapper">
@@ -25,7 +27,7 @@
                 <label>
                     <input name="camo-pattern" type="radio" value="m90p2" checked>M90(2)
                     <div id="m90p2-control">
-                        <div class="controls-section-title">Custom Parameter</div>
+                        <div class="controls-section-title">Pattern Parameter</div>
                         <label>Number of Points (<span id="num-points-val">100</span>)</label><br>
                         <input type="range" name="num-points" min="1" max="500" value="100">
                         <label>Camo Depth (<span id="camo-depth-val">2</span>)</label><br>
@@ -36,24 +38,49 @@
                     </div>
 
                 </label>
-
             </div>
             <div id="color-palette" class="controls-section">
                 <div class="controls-section-title">Color Palette</div>
                 <div>
-                    <label><input name="color-palette" type="radio" value="green" checked>Green</label>
-                    <label><input name="color-palette" type="radio" value="blue">Blue</label>
-                    <label><input name="color-palette" type="radio" value="desert">Desert</label>
-                    <label><input name="color-palette" type="radio" value="orange">Orange</label>
-                </div>
-                <div>
-                    <label><input name="color-palette" type="radio" value="uc1">UC1</label>
-                    <label><input name="color-palette" type="radio" value="uc2">UC2</label>
+                    <label class="radio">
+                        <input name="color-palette" type="radio" value="green" checked>
+                        <span class="outside"><span class="inside"></span></span>Green
+                    </label>
+                    <label class="radio">
+                        <input name="color-palette" type="radio" value="blue">
+                        <span class="outside"><span class="inside"></span></span>Blue
+                    </label>
+                    <label class="radio">
+                        <input name="color-palette" type="radio" value="desert">
+                        <span class="outside"><span class="inside"></span></span>Desrt
+                    </label>
+                    <label class="radio">
+                        <input name="color-palette" type="radio" value="orange">
+                        <span class="outside"><span class="inside"></span></span>Orange
+                    </label>
+                    <label class="radio">
+                        <input name="color-palette" type="radio" value="uc1">
+                        <span class="outside"><span class="inside"></span></span>UC1
+                    </label>
+                    <label class="radio">
+                        <input name="color-palette" type="radio" value="uc2">
+                        <span class="outside"><span class="inside"></span></span>UC2
+                    </label>
                 </div>
             </div>
         </form>
     </div>
+    <div class="mobile-ui-wrapper">
+        <div class="icon-button-wrapper">
+            <span id="open-settings" class="icon-button">
+                <i id="open-settings-on" class="fas fa-cog fa-m8"></i>
+                <i id="open-settings-off" class="fas fa-times fa-m8 fade-out"></i>
+            </span>
+        </div>
+    </div>
+    <div class="ui-background" id="tap-to-refresh"></div>
 </div>
 <canvas id="canvas"></canvas>
+
 </body>
 </html>

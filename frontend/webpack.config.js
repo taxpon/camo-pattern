@@ -4,6 +4,7 @@ const enabledSourceMap = MODE === "development";
 module.exports = {
     mode: MODE,
     entry: './src/index.ts',
+    devtool: 'inline-source-map',
     module: {
         rules: [
             {
