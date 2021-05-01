@@ -88,6 +88,11 @@ window.onload = () => {
         }
     }
 
+    window.ontouchend = (e) => {
+        c.reDraw()
+        State.setState(StateKey.MOUSE_INTERACTION, false)
+    }
+
     // Keyboard
     window.onkeydown = (e) => {
         if (e.key === "m") {
