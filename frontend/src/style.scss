@@ -38,6 +38,7 @@ body {
   border: 3px dashed gray;
   background: rgba(128, 128, 128, 0.7);
   z-index: 20;
+  overflow-y: scroll;
 
   .button {
     background: grey;
