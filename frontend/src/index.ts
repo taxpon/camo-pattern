@@ -5,144 +5,151 @@ import {StateKey} from "./model/stateKey";
 import {Point} from "./geometry/point";
 import {Color} from "./color";
 
-window.onload = () => {
-    // Insert Color Palette
-    const paletteTemplate = document.getElementById("color-palette-template") as HTMLTemplateElement
-    const paletteList = document.getElementById("color-palette-list")
-    let isFirstPalette = true
-    Color.getPalettes().forEach(palette => {
-        const clone = paletteTemplate.content.cloneNode(true) as HTMLElement;
-        const radio = (clone.querySelector("input[type=radio]") as HTMLInputElement)
-        radio.value = palette.id
-        if (isFirstPalette) {
-            radio.checked = isFirstPalette
-            isFirstPalette = false
+class App {
+
+    initialize() {
+        // Insert Color Palette
+        const paletteTemplate = document.getElementById("color-palette-template") as HTMLTemplateElement
+        const paletteList = document.getElementById("color-palette-list")
+        let isFirstPalette = true
+        Color.getPalettes().forEach(palette => {
+            const clone = paletteTemplate.content.cloneNode(true) as HTMLElement;
+            const radio = (clone.querySelector("input[type=radio]") as HTMLInputElement)
+            radio.value = palette.id
+            if (isFirstPalette) {
+                radio.checked = isFirstPalette
+                isFirstPalette = false
+            }
+            clone.querySelector(".palette-name").textContent = palette.name
+            paletteList.appendChild(clone)
+        })
+
+        const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+        let download = document.getElementById("download");
+        download.onclick = (e) => {
+            let link = document.createElement("a");
+            document.body.appendChild(link)
+            link.setAttribute('download', 'camo-pattern.png');
+            link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+            link.click();
+            document.body.removeChild(link);
         }
-        clone.querySelector(".palette-name").textContent = palette.name
-        paletteList.appendChild(clone)
-    })
 
-    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    let download = document.getElementById("download");
-    download.onclick = (e) => {
-        let link = document.createElement("a");
-        document.body.appendChild(link)
-        link.setAttribute('download', 'camo-pattern.png');
-        link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
-        link.click();
-        document.body.removeChild(link);
-    }
+        let refresh = document.getElementById("refresh");
+        refresh.onclick = () => {
+            c.reDraw();
+        }
 
-    let refresh = document.getElementById("refresh");
-    refresh.onclick = () => {
-        c.reDraw();
-    }
+        let form = document.getElementById("controls-values");
+        State.setState(StateKey.PATTERN, form["camo-pattern"].value);
+        State.setState(StateKey.PALETTE, form["color-palette"].value);
+        State.setState(StateKey.NUM_POINTS, form["num-points"].value);
+        State.setState(StateKey.CAMO_DEPTH, form["camo-depth"].value);
+        State.setState(StateKey.ANIMATE, false);
+        State.setState(StateKey.MOUSE_INTERACTION, false);
+        State.setState(StateKey.ENABLE_CONTROL_PANEL, true);
 
-    let form = document.getElementById("controls-values");
-    State.setState(StateKey.PATTERN, form["camo-pattern"].value);
-    State.setState(StateKey.PALETTE, form["color-palette"].value);
-    State.setState(StateKey.NUM_POINTS, form["num-points"].value);
-    State.setState(StateKey.CAMO_DEPTH, form["camo-depth"].value);
-    State.setState(StateKey.ANIMATE, false);
-    State.setState(StateKey.MOUSE_INTERACTION, false);
-    State.setState(StateKey.ENABLE_CONTROL_PANEL, true);
+        let camoRadios = document.querySelectorAll("#camo-pattern input[type=radio]");
+        camoRadios.forEach((elem: HTMLInputElement) => {
+            elem.onclick = () => {
+                if (State.getState(StateKey.PATTERN) != elem.value) {
+                    State.setState(StateKey.PATTERN, elem.value);
+                }
+            }
+        })
 
-    let camoRadios = document.querySelectorAll("#camo-pattern input[type=radio]");
-    camoRadios.forEach((elem: HTMLInputElement) => {
-        elem.onclick = () => {
-            if (State.getState(StateKey.PATTERN) != elem.value) {
-                State.setState(StateKey.PATTERN, elem.value);
+        let camoSlider = document.querySelector("#camo-pattern input[name=num-points]") as HTMLInputElement;
+        let camoSliderIndicator = document.getElementById("num-points-val");
+        camoSlider.onchange = _ => {
+            camoSliderIndicator.textContent = camoSlider.value
+            if (State.getState(StateKey.NUM_POINTS) != camoSlider.value) {
+                State.setState(StateKey.NUM_POINTS, camoSlider.value)
             }
         }
-    })
 
-    let camoSlider = document.querySelector("#camo-pattern input[name=num-points]") as HTMLInputElement;
-    let camoSliderIndicator = document.getElementById("num-points-val");
-    camoSlider.onchange = _ => {
-        camoSliderIndicator.textContent = camoSlider.value
-        if (State.getState(StateKey.NUM_POINTS) != camoSlider.value) {
-            State.setState(StateKey.NUM_POINTS, camoSlider.value)
-        }
-    }
-
-    let depthSlider = document.querySelector("#camo-pattern input[name=camo-depth]") as HTMLInputElement;
-    let depthSliderIndicator = document.getElementById("camo-depth-val");
-    depthSlider.onchange = _ => {
-        depthSliderIndicator.textContent = depthSlider.value
-        if (State.getState(StateKey.CAMO_DEPTH) != depthSlider.value) {
-            State.setState(StateKey.CAMO_DEPTH, depthSlider.value)
-        }
-    }
-
-
-    let startAnimate = document.getElementById("start-animate");
-    startAnimate.onclick = _ => {
-        if (State.getState(StateKey.ANIMATE) !== true) {
-            State.setState(StateKey.ANIMATE, true)
-        }
-    }
-
-    let stopAnimate = document.getElementById("stop-animate");
-    stopAnimate.onclick = _ => {
-        if (State.getState(StateKey.ANIMATE) !== false) {
-            State.setState(StateKey.ANIMATE, false)
-        }
-    }
-
-    let colorRadios = document.querySelectorAll("#color-palette input[type=radio]");
-    colorRadios.forEach((elem: HTMLInputElement) => {
-        elem.onclick = () => {
-            if (State.getState(StateKey.PALETTE) != elem.value) {
-                State.setState(StateKey.PALETTE, elem.value);
+        let depthSlider = document.querySelector("#camo-pattern input[name=camo-depth]") as HTMLInputElement;
+        let depthSliderIndicator = document.getElementById("camo-depth-val");
+        depthSlider.onchange = _ => {
+            depthSliderIndicator.textContent = depthSlider.value
+            if (State.getState(StateKey.CAMO_DEPTH) != depthSlider.value) {
+                State.setState(StateKey.CAMO_DEPTH, depthSlider.value)
             }
         }
-    })
 
-    window.onmousemove = (e) => {
-        if (!State.getState(StateKey.MOUSE_POS) ||
-            !(State.getState(StateKey.MOUSE_POS) as Point).equals(Point.of(e.clientX, e.clientY))) {
-            State.setState(StateKey.MOUSE_POS, Point.of(e.clientX, e.clientY));
-        }
-    }
 
-    const tapToRefresh = document.getElementById("tap-to-refresh")
-    tapToRefresh.ontouchend = (e) => {
-        c.reDraw()
-        State.setState(StateKey.MOUSE_INTERACTION, false)
-    }
-
-    // Mobile UI interaction
-    const camoControlPanel = document.getElementById("camo-control-panel")
-    const openSettings = document.getElementById("open-settings")
-    const openSettingsOn = document.getElementById("open-settings-on")
-    const openSettingsOff = document.getElementById("open-settings-off")
-    openSettings.ontouchend = (e) => {
-        camoControlPanel.classList.toggle("activated")
-        openSettingsOn.classList.toggle("fade-out")
-        openSettingsOff.classList.toggle("fade-out")
-    }
-
-    // Keyboard
-    window.onkeydown = (e) => {
-        if (e.key === "m") {
-            State.flipState(StateKey.MOUSE_INTERACTION)
-        }
-        else if (e.key === "c") {
-            const enabled = State.flipState(StateKey.ENABLE_CONTROL_PANEL)
-            const elem = document.getElementById("camo-control-panel")
-            if (enabled) {
-                elem.style.display = "block"
-            } else {
-                elem.style.display = "none"
+        let startAnimate = document.getElementById("start-animate");
+        startAnimate.onclick = _ => {
+            if (State.getState(StateKey.ANIMATE) !== true) {
+                State.setState(StateKey.ANIMATE, true)
             }
         }
-        else if (e.key === "r") {
+
+        let stopAnimate = document.getElementById("stop-animate");
+        stopAnimate.onclick = _ => {
+            if (State.getState(StateKey.ANIMATE) !== false) {
+                State.setState(StateKey.ANIMATE, false)
+            }
+        }
+
+        let colorRadios = document.querySelectorAll("#color-palette input[type=radio]");
+        colorRadios.forEach((elem: HTMLInputElement) => {
+            elem.onclick = () => {
+                if (State.getState(StateKey.PALETTE) != elem.value) {
+                    State.setState(StateKey.PALETTE, elem.value);
+                }
+            }
+        })
+
+        window.onmousemove = (e) => {
+            if (!State.getState(StateKey.MOUSE_POS) ||
+                !(State.getState(StateKey.MOUSE_POS) as Point).equals(Point.of(e.clientX, e.clientY))) {
+                State.setState(StateKey.MOUSE_POS, Point.of(e.clientX, e.clientY));
+            }
+        }
+
+        const tapToRefresh = document.getElementById("tap-to-refresh")
+        tapToRefresh.ontouchend = (e) => {
             c.reDraw()
+            State.setState(StateKey.MOUSE_INTERACTION, false)
         }
-        else if (e.key === "a") {
-            State.flipState(StateKey.ANIMATE)
-        }
-    }
 
-    let c = new Canvas();
+        // Mobile UI interaction
+        const camoControlPanel = document.getElementById("camo-control-panel")
+        const openSettings = document.getElementById("open-settings")
+        const openSettingsOn = document.getElementById("open-settings-on")
+        const openSettingsOff = document.getElementById("open-settings-off")
+        openSettings.ontouchend = (e) => {
+            camoControlPanel.classList.toggle("activated")
+            openSettingsOn.classList.toggle("fade-out")
+            openSettingsOff.classList.toggle("fade-out")
+        }
+
+        // Keyboard
+        window.onkeydown = (e) => {
+            if (e.key === "m") {
+                State.flipState(StateKey.MOUSE_INTERACTION)
+            }
+            else if (e.key === "c") {
+                const enabled = State.flipState(StateKey.ENABLE_CONTROL_PANEL)
+                const elem = document.getElementById("camo-control-panel")
+                if (enabled) {
+                    elem.style.display = "block"
+                } else {
+                    elem.style.display = "none"
+                }
+            }
+            else if (e.key === "r") {
+                c.reDraw()
+            }
+            else if (e.key === "a") {
+                State.flipState(StateKey.ANIMATE)
+            }
+        }
+
+        let c = new Canvas();
+    }
+}
+
+window.onload = () => {
+    (new App()).initialize();
 };
