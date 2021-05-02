@@ -178,7 +178,7 @@ export class M90Pattern2 extends BaseLogic {
         this.triangles.forEach(triangle => {
             if (this.isActiveTriangle(triangle)) {
                 this.drawPolygon(triangle, "red")
-            } else if (this.adjacentPolygons[triangle.keyIndex]) {
+            } else if (this.adjacentPolygons && this.adjacentPolygons[triangle.keyIndex]) {
                this.drawPolygon(triangle, "blue")
             } else {
                 this.drawPolygon(triangle)
