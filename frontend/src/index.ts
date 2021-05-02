@@ -3,8 +3,25 @@ import "./style.scss";
 import {State} from "./model/state";
 import {StateKey} from "./model/stateKey";
 import {Point} from "./geometry/point";
+import {Color} from "./color";
 
 window.onload = () => {
+    // Insert Color Palette
+    const paletteTemplate = document.getElementById("color-palette-template") as HTMLTemplateElement
+    const paletteList = document.getElementById("color-palette-list")
+    let isFirstPalette = true
+    Color.getPalettes().forEach(palette => {
+        const clone = paletteTemplate.content.cloneNode(true) as HTMLElement;
+        const radio = (clone.querySelector("input[type=radio]") as HTMLInputElement)
+        radio.value = palette.id
+        if (isFirstPalette) {
+            radio.checked = isFirstPalette
+            isFirstPalette = false
+        }
+        clone.querySelector(".palette-name").textContent = palette.name
+        paletteList.appendChild(clone)
+    })
+
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     let download = document.getElementById("download");
     download.onclick = (e) => {

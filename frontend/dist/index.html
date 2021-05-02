@@ -42,36 +42,7 @@
                 </div>
                 <div id="color-palette" class="controls-section">
                     <div class="controls-section-title">Color Palette</div>
-                    <div>
-                        <label class="radio">
-                            <input name="color-palette" type="radio" value="green" checked>
-                            <span class="outside"><span class="inside"></span></span>Green
-                        </label>
-                        <label class="radio">
-                            <input name="color-palette" type="radio" value="blue">
-                            <span class="outside"><span class="inside"></span></span>Blue
-                        </label>
-                        <label class="radio">
-                            <input name="color-palette" type="radio" value="desert">
-                            <span class="outside"><span class="inside"></span></span>Desrt
-                        </label>
-                        <label class="radio">
-                            <input name="color-palette" type="radio" value="orange">
-                            <span class="outside"><span class="inside"></span></span>Orange
-                        </label>
-                        <label class="radio">
-                            <input name="color-palette" type="radio" value="uc1">
-                            <span class="outside"><span class="inside"></span></span>UC1
-                        </label>
-                        <label class="radio">
-                            <input name="color-palette" type="radio" value="uc2">
-                            <span class="outside"><span class="inside"></span></span>UC2
-                        </label>
-                        <label class="radio">
-                            <input name="color-palette" type="radio" value="bw">
-                            <span class="outside"><span class="inside"></span></span>BW
-                        </label>
-                    </div>
+                    <div id="color-palette-list"></div>
                 </div>
             </form>
         </div>
@@ -87,5 +58,12 @@
     </div>
     <canvas id="canvas"></canvas>
 </div>
+<template id="color-palette-template">
+    <label class="radio">
+        <input name="color-palette" type="radio" value="">
+        <span class="outside"><span class="inside"></span></span>
+        <span class="palette-name"></span>
+    </label>
+</template>
 </body>
 </html>
