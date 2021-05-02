@@ -39,6 +39,9 @@ body {
   background: rgba(128, 128, 128, 0.7);
   z-index: 20;
   overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .button {
     background: grey;
