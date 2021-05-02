@@ -92,3 +92,10 @@ $size: 30px;
         }*/
   }
 }
+@media only screen
+and (max-device-width: 812px) {
+  input[type=range] {
+    margin: 1rem 0;
+  }
+
+}
