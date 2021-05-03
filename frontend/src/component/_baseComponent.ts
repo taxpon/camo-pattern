@@ -4,14 +4,6 @@ export abstract class Component {
     protected templateSrc: string
     protected template: HTMLTemplateElement
 
-    constructor() {
-        this.initialize()
-        this.initTemplate()
-    }
-
-    protected initialize() {}
-    protected initTemplate() {}
-
     public getState(key): any {
         return this._state[key]
     }

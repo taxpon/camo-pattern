@@ -3,14 +3,17 @@ import {Color, ColorPalette} from "../color";
 
 export class ColorPaletteComponent extends Component {
 
-    static _template = `
+    protected templateSrc = `
 <label class="radio">
     <input name="color-palette" type="radio" value="">
     <span class="outside"><span class="inside"></span></span>
     <span class="palette-name"></span>
 </label>`
+    protected template = document.createElement("template")
 
-    protected initialize() {
+    constructor() {
+        super();
+        this.template.innerHTML = this.templateSrc.trim()
         this.setState("default-palette", Color.getPalettes())
     }
 
@@ -19,10 +22,12 @@ export class ColorPaletteComponent extends Component {
         const palettes = this.getState("default-palette") as Map<string, ColorPalette>
         let isFirstPalette = true
 
+        if (!palettes) {
+            throw Error("Failed to get color palette properly")
+        }
+
         palettes.forEach(palette => {
-            const template = document.createElement("template");
-            template.innerHTML = ColorPaletteComponent._template.trim()
-            const clone = template.content.cloneNode(true) as HTMLElement
+            const clone = this.template.content.cloneNode(true) as HTMLElement
             const radio = (clone.querySelector("input[type=radio]") as HTMLInputElement)
             radio.value = palette.id
             if (isFirstPalette) {
