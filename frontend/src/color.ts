@@ -1,5 +1,5 @@
 
-class ColorPalette {
+export class ColorPalette {
     constructor(private _id: string, private _name: string, private _colors: string[]) {
     }
     get id() {
