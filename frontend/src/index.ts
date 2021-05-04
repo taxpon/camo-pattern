@@ -4,6 +4,7 @@ import {State} from "./model/state";
 import {StateKey} from "./model/stateKey";
 import {Point} from "./geometry/point";
 import {ColorPaletteComponent} from "./component/colorPaletteComponent";
+import {Color, ColorPalette} from "./color";
 
 class App {
 
@@ -15,9 +16,18 @@ class App {
         const palette = this.colorPaletteComponent.render();
         paletteList.appendChild(palette)
 
+        const addButton = document.getElementById("add-color")
+        addButton.onmousedown = _ => {
+            Color.setUserPalette(new ColorPalette("test", "Test", [
+                "#FF0000",
+                "#00FF00",
+                "#0000FF"
+            ]))
+        }
+
         const canvas = document.getElementById("canvas") as HTMLCanvasElement;
         let download = document.getElementById("download");
-        download.onclick = (e) => {
+        download.onclick = () => {
             let link = document.createElement("a");
             document.body.appendChild(link)
             link.setAttribute('download', 'camo-pattern.png');
@@ -39,15 +49,6 @@ class App {
         State.setState(StateKey.ANIMATE, false);
         State.setState(StateKey.MOUSE_INTERACTION, false);
         State.setState(StateKey.ENABLE_CONTROL_PANEL, true);
-
-        let camoRadios = document.querySelectorAll("#camo-pattern input[type=radio]");
-        camoRadios.forEach((elem: HTMLInputElement) => {
-            elem.onclick = () => {
-                if (State.getState(StateKey.PATTERN) != elem.value) {
-                    State.setState(StateKey.PATTERN, elem.value);
-                }
-            }
-        })
 
         let camoSlider = document.querySelector("#camo-pattern input[name=num-points]") as HTMLInputElement;
         let camoSliderIndicator = document.getElementById("num-points-val");
@@ -99,7 +100,7 @@ class App {
         }
 
         const tapToRefresh = document.getElementById("tap-to-refresh")
-        tapToRefresh.ontouchend = (e) => {
+        tapToRefresh.ontouchend = () => {
             c.reDraw()
             State.setState(StateKey.MOUSE_INTERACTION, false)
         }
@@ -109,7 +110,7 @@ class App {
         const openSettings = document.getElementById("open-settings")
         const openSettingsOn = document.getElementById("open-settings-on")
         const openSettingsOff = document.getElementById("open-settings-off")
-        openSettings.ontouchend = (e) => {
+        openSettings.ontouchend = () => {
             camoControlPanel.classList.toggle("activated")
             openSettingsOn.classList.toggle("fade-out")
             openSettingsOff.classList.toggle("fade-out")
