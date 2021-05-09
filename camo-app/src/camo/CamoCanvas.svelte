@@ -43,7 +43,6 @@
     })
     const unsubscribe3 = downloadSwitch.subscribe(download)
     const unsubscribe4 = editingColors.subscribe(v => {
-        console.log("Updated color", v)
         const colorIter = Color.colorGenerator(v);
         redraw(colorIter, true);
     })

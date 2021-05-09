@@ -9,7 +9,8 @@
 
     export let camoPattern = "m90p2";
     export let colorPalette = "green";
-    let defaultPalettes = [...Color.getDefaultPalettes()]
+    let defaultPalettes = [...Color.getDefaultPalettes()];
+    let userPalettes = [...Color.getUserPalettes()];
     let showColorPicker = false;
 
     let n1 = 100;
@@ -17,10 +18,6 @@
     let newColors = [{color: "#000000"}];
     let newPaletteName;
 
-    onMount(() => {
-        console.log(defaultPalettes)
-        console.log([...defaultPalettes])
-    })
     $: {
         numPoints.set(n1);
         campDepth.set(n2);
@@ -68,7 +65,22 @@
     }
 
     function addNewColorPalette() {
-        console.log(newColors, newPaletteName);
+        let id = getUniqueStr()
+        let palette = new ColorPalette(id, newPaletteName, newColors.map(c => c.color))
+        Color.setUserPalette(palette);
+        userPalettes = [...Color.getUserPalettes()]
+    }
+
+    function deleteColorPalette(value) {
+        if (window.confirm(`Delete ${value.name}?`)) {
+            Color.deleteUserPalette(value.id);
+            userPalettes = [...Color.getUserPalettes()];
+        }
+    }
+
+    function getUniqueStr(){
+        let strong = 1000;
+        return new Date().getTime().toString(16)  + Math.floor(strong*Math.random()).toString(16)
     }
 
 </script>
@@ -137,6 +149,18 @@
                                 <span class="outside"><span class="inside"></span></span>
                                 <span class="radio-name">{value.name}</span>
                             </label>
+                        </div>
+                    {/each}
+                    {#each [...userPalettes] as [key, value] (key)}
+                        <div>
+                            <label>
+                                <input type="radio" bind:group={colorPalette} value="{key}">
+                                <span class="outside"><span class="inside"></span></span>
+                                <span class="radio-name">{value.name}</span>
+                            </label>
+                            <span class="icon-button" on:click={deleteColorPalette(value)}>
+                                <i class="far fa-trash-alt"></i>
+                            </span>
                         </div>
                     {/each}
                 </div>

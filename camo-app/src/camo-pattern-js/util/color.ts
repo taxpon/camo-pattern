@@ -100,6 +100,24 @@ export class Color {
         })
     }
 
+    private static saveUserPalettes() {
+        let serializableUserPalette: ColorPalette[] = []
+        this._userPalettes.forEach(value => {
+            serializableUserPalette.push(value)
+        })
+        window.localStorage.setItem("userPalettes", JSON.stringify(serializableUserPalette))
+    }
+
+    public static setUserPalette(palette: ColorPalette) {
+        this._userPalettes.set(palette.id, palette)
+        this.saveUserPalettes()
+    }
+
+    public static deleteUserPalette(id: string) {
+        this._userPalettes.delete(id)
+        this.saveUserPalettes()
+    }
+
     private static range = (start: number, end: number) => Array.from({length: (end - start + 1)}, (v, k) => k + start);
 
     public static getDefaultPalettes(): Map<string, ColorPalette> {
