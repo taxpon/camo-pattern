@@ -6,3 +6,4 @@ export const redrawSwitch = writable(0);
 export const downloadSwitch = writable(0);
 export const mouseTrack = writable(false);
 export const camoAnimate = writable(false);
+export const editingColors = writable([])

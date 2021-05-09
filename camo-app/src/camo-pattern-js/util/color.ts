@@ -132,4 +132,17 @@ export class Color {
             }
         }
     }
+
+    public static * colorGenerator2(colors: string[]): IterableIterator<[string, number]> {
+        for (;;) {
+            let indices = this.range(0, colors.length - 1)
+            for (let i = indices.length; 1 < i; i--) {
+                let k = Math.floor(Math.random() * i);
+                [indices[k], indices[i - 1]] = [indices[i - 1], indices[k]];
+            }
+            for (let i = 0; i < indices.length; i++) {
+                yield [colors[indices[i]], i];
+            }
+        }
+    }
 }

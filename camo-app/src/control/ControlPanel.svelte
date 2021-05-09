@@ -2,7 +2,7 @@
     import ControlColumn from "./ControlColumn.svelte";
     import {
         numPoints, campDepth,
-        redrawSwitch, mouseTrack, camoAnimate, downloadSwitch
+        redrawSwitch, mouseTrack, camoAnimate, downloadSwitch, editingColors
     } from "../state/stores";
     import {createEventDispatcher, onMount} from "svelte";
     import {Color, ColorPalette} from "../camo-pattern-js/util/color"
@@ -10,12 +10,12 @@
     export let camoPattern = "m90p2";
     export let colorPalette = "green";
     let defaultPalettes = [...Color.getDefaultPalettes()]
-    let map = new Map();
-    map.set("green", "foo")
-    // map.set("blue", "bar")
+    let showColorPicker = false;
 
     let n1 = 100;
     let n2 = 2;
+    let newColors = [{color: "#000000"}];
+    let newPaletteName;
 
     onMount(() => {
         console.log(defaultPalettes)
@@ -41,6 +41,36 @@
     function toggleMouseTrack() {
         mouseTrack.update(n => !n)
     }
+
+    function showNewColorPanel() {
+        showColorPicker = true;
+        newColors = [];
+        newPaletteName = undefined;
+        addNewColor(false);
+    }
+
+    function addNewColor(propagate = true) {
+        newColors = newColors.concat({color: "#" + Math.floor(Math.random() * 16777215).toString(16)});
+        if (propagate) {
+            updateEditingColors();
+        }
+    }
+
+    function updateEditingColors() {
+        $editingColors = newColors.map(c => c.color);
+    }
+
+    function handleDeleteColor(i) {
+        console.log(i);
+        newColors.splice(i, 1)
+        newColors = [...newColors]
+        updateEditingColors();
+    }
+
+    function addNewColorPalette() {
+        console.log(newColors, newPaletteName);
+    }
+
 </script>
 <div class="control-panel">
     <div class="control-columns">
@@ -96,7 +126,9 @@
             </div>
             {/if}
             <div class="control-section">
-                <div class="control-section-title">Color Palette</div>
+                <div class="control-section-title">Color Palette
+                    <span class="button small" on:mousedown={() => showNewColorPanel()}>+Add</span>
+                </div>
                 <div class="control-section-sub">
                     {#each [...defaultPalettes] as [key, value] (key)}
                         <div>
@@ -110,9 +142,37 @@
                 </div>
             </div>
         </ControlColumn>
-<!--        <ControlColumn>-->
-<!--            bbb-->
-<!--        </ControlColumn>-->
+        {#if showColorPicker}
+            <ControlColumn>
+                <div class="control-section">
+                    <div class="control-section-title" style="float: left;">New Color Palette</div>
+                    <span class="button small" style="float: right;" on:mousedown={() => showColorPicker = false}>X Close</span>
+                    <div style="clear: both;"></div>
+
+                    <div class="control-section-sub">
+                        <div class="control-section-sub-title">Colors</div>
+                        <span class="button full small" on:click={addNewColor}>Add Color</span>
+                        {#each newColors as newColor, i (i) }
+                            <label>
+                                <input type="color" bind:value={newColor.color} on:input={updateEditingColors}>
+                                <span class="icon-button" on:click={handleDeleteColor(i)}>
+                                    <i class="far fa-trash-alt"></i>
+                                </span>
+                            </label>
+                        {/each}
+                    </div>
+                    <div class="control-section-sub">
+                        <div class="control-section-sub-title">Palette Name</div>
+                        <input type="text" bind:value={newPaletteName}>
+                    </div>
+                    <div class="control-section-sub" style="margin-top: 1rem;">
+                        <button class="button full"
+                                disabled="{newColors.length < 2 || (newPaletteName && newPaletteName.length === 0)}"
+                                on:click={addNewColorPalette}>Add New Color Palette</button>
+                    </div>
+                </div>
+            </ControlColumn>
+        {/if}
     </div>
 </div>
 <style lang="scss">
@@ -137,6 +197,17 @@
       padding: 0;
     }
 
+    input[type=color] {
+      width: 80%;
+      margin-bottom: $section-margin;
+    }
+
+    input[type=text] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.5rem;
+    }
+
     &-title {
       font-size: 1.1rem;
       margin-bottom: 10px;
@@ -145,6 +216,7 @@
 
     &-sub {
       margin-left: $section-margin;
+      margin-right: $section-margin;
       margin-bottom: $section-margin;
 
       label {
@@ -174,5 +246,22 @@
     &:active {
       background: #aaaaaa;
     }
+
+    &.small {
+      padding: 0.1rem;
+      font-size: 0.8rem;
+      font-weight: normal;
+    }
+
+    &.full {
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: $section-margin;
+    }
+  }
+
+  .icon-button {
+    cursor: pointer;
+    margin-left: 0.5rem;
   }
 </style>

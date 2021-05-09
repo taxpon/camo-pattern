@@ -32,10 +32,21 @@ export class M90Pattern2 extends BaseLogic {
         const xGrid = Math.ceil(width / unit)
         const yGrid = Math.ceil(height / unit)
 
-        IndexGenerator.reset()
+        if (options['skipPointGeneration'] && this.triangles) {
+            this.visitMap = {}
+            for (let i = 0; i < this.triangles.length; i++) {
+                const triangle = this.triangles[i]
+                if (this.visitMap[triangle.keyIndex]) {
+                    continue
+                }
+                this.makeCamouflage(triangle, colIter.next().value, options["camo_depth"])
+            }
+            return;
+        }
 
-        for(let i = 0; i < xGrid + 1; i++) {
-            for(let j = 0; j < yGrid + 1; j++) {
+        IndexGenerator.reset()
+        for (let i = 0; i < xGrid + 1; i++) {
+            for (let j = 0; j < yGrid + 1; j++) {
                 this.points.push(new Point(
                     (width / xGrid) * i, (height / yGrid) * j, IndexGenerator.incrementAndGet()
                 ))
@@ -50,13 +61,13 @@ export class M90Pattern2 extends BaseLogic {
 
         // Circumcircle
         const r = Math.sqrt((width * width + height * height)) / 2
-        const center = new Point(width / 2, height/2)
+        const center = new Point(width / 2, height / 2)
         this.drawCircle(new Circle(center, r, "rgba(1, 1, 1, 0)"))
 
         // Circumtriangle
-        const p1 = new Point(center.x - Math.sqrt(3) * r,center.y - r, IndexGenerator.incrementAndGet())
-        const p2 = new Point(center.x + Math.sqrt(3) * r,center.y - r, IndexGenerator.incrementAndGet())
-        const p3 = new Point(center.x,center.y + r * 2, IndexGenerator.incrementAndGet())
+        const p1 = new Point(center.x - Math.sqrt(3) * r, center.y - r, IndexGenerator.incrementAndGet())
+        const p2 = new Point(center.x + Math.sqrt(3) * r, center.y - r, IndexGenerator.incrementAndGet())
+        const p3 = new Point(center.x, center.y + r * 2, IndexGenerator.incrementAndGet())
         const baseTriangle = new Triangle([p1, p2, p3], "pink")
 
         colIter.next()
@@ -74,14 +85,14 @@ export class M90Pattern2 extends BaseLogic {
 
             edges
                 .map((edge, i) => {
-                    for (let j = 0; j < edges.length; j++ ){
+                    for (let j = 0; j < edges.length; j++) {
                         if (i != j && edge.equals(edges[j])) {
                             return null
                         }
                     }
                     return edge
                 })
-                .filter(x   => x)
+                .filter(x => x)
                 .forEach(edge => {
                     triangles.push(new Triangle([edge.start, edge.end, p], colIter.next().value))
                 })
@@ -175,7 +186,7 @@ export class M90Pattern2 extends BaseLogic {
             if (this.isActiveTriangle(triangle)) {
                 this.drawPolygon(triangle, "red")
             } else if (this.adjacentPolygons && this.adjacentPolygons[triangle.keyIndex]) {
-               this.drawPolygon(triangle, "blue")
+                this.drawPolygon(triangle, "blue")
             } else {
                 this.drawPolygon(triangle)
             }

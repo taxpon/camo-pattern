@@ -3,7 +3,15 @@
     import {M90Pattern1} from "../camo-pattern-js/drawing/m90Pattern1";
     import {Color} from "../camo-pattern-js/util/color";
     import {M90Pattern2} from "../camo-pattern-js/drawing/m90Pattern2";
-    import {numPoints, campDepth, redrawSwitch, mouseTrack, camoAnimate, downloadSwitch} from "../state/stores";
+    import {
+        numPoints,
+        campDepth,
+        redrawSwitch,
+        mouseTrack,
+        camoAnimate,
+        downloadSwitch,
+        editingColors
+    } from "../state/stores";
     import {Point} from "../camo-pattern-js/geometry/point";
 
     export let pattern: string = "m90p2"
@@ -23,7 +31,7 @@
     })
 
     // Redraw Triggers
-    const unsubscribe = redrawSwitch.subscribe(redraw)
+    const unsubscribe = redrawSwitch.subscribe(v => redraw())
     const unsubscribe1 = mouseTrack.subscribe(v => mouseTrackEnabled = v)
     const unsubscribe2 = camoAnimate.subscribe(v => {
         if (!m90p2) return;
@@ -34,33 +42,41 @@
         }
     })
     const unsubscribe3 = downloadSwitch.subscribe(download)
-    beforeUpdate(redraw)
+    const unsubscribe4 = editingColors.subscribe(v => {
+        console.log("Updated color", v)
+        const colorIter = Color.colorGenerator(v);
+        redraw(colorIter, true);
+    })
+
+    beforeUpdate(() => redraw())
 
     onDestroy(() => {
         unsubscribe();
         unsubscribe1();
         unsubscribe2();
-        unsubscribe2();
+        unsubscribe3();
+        unsubscribe4();
     })
 
-    function redraw() {
+    function redraw(colorIter = undefined, skipPointGeneration = false) {
         if (!ctx) {
             return
         }
         let width = document.documentElement.clientWidth;
         let height = document.documentElement.clientHeight;
-        clearCanvas(width, height);
-        draw(width, height)
+        clearCanvas(width, height, colorIter);
+        draw(width, height, colorIter, skipPointGeneration)
     }
 
-    function draw(width, height) {
-        let colorIter = Color.colorGeneratorFromPalette(color);
+    function draw(width, height, colorIter = undefined, skipPointGeneration = false) {
+        colorIter = colorIter || Color.colorGeneratorFromPalette(color);
         if (pattern === "m90p1") {
             m90p1.draw(width, height, colorIter)
         } else if (pattern === "m90p2") {
             const options = {
                 "num_points": $numPoints,
-                "camo_depth": $campDepth
+                "camo_depth": $campDepth,
+                "skipPointGeneration": skipPointGeneration
             }
             m90p2.draw(width, height, colorIter, options);
         } else {
@@ -68,10 +84,10 @@
         }
     }
 
-    function clearCanvas(width, height) {
+    function clearCanvas(width, height, colorIter = undefined) {
         canvas.setAttribute("width", width.toString());
         canvas.setAttribute("height", height.toString());
-        ctx.fillStyle = Color.getBaseColorFromPalette(color);
+        ctx.fillStyle = colorIter ?  colorIter.next().value : Color.getBaseColorFromPalette(color);
         ctx.fillRect(0, 0, width, height);
     }
 
@@ -97,7 +113,7 @@
 <div class="canvas-wrapper">
     <canvas bind:this={canvas} on:mousemove={handleMouseMove}></canvas>
 </div>
-<svelte:window on:resize={redraw}/>
+<svelte:window on:resize={() => redraw()}/>
 
 
 <style lang="scss">
