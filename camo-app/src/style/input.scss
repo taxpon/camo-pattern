@@ -2,8 +2,8 @@
 $almost-white: #F3F3F3;
 $almost-black: #444;
 $border: #CCCCCC;
-$left: 30px;
-$size: 30px;
+$left: 1rem;
+$size: 1.2rem;
 
 @keyframes radio-select {
   0% {
@@ -28,12 +28,14 @@ $size: 30px;
 
 .control-panel {
   label.radio {
-    margin: 1rem 0;
-    display: block;
+    margin: 0.5rem 0;
+    display: inline-block;
     position: relative;
     padding-left: $left;
     cursor: pointer;
     float: left;
+    //width: 100%;
+    box-sizing: border-box;
   }
 
   input[type=radio] {
@@ -60,11 +62,11 @@ $size: 30px;
     @include centerer;
     display: inline-block;
     border-radius: 50%;
-    width: ($size - 10px);
-    height: ($size - 10px);
+    width: ($size - 0.5rem);
+    height: ($size - 0.5rem);
     background: $almost-black;
-    left: 3px;
-    top: 3px;
+    left: 0.125rem;
+    top: 0.125rem;
     transform: scale(0,0);
     .no-transforms & {
       left: auto;
@@ -80,8 +82,8 @@ $size: 30px;
         animation: radio-select 0.1s linear;
         transform: scale(1,1);
         .no-transforms & {
-          width: ($size - 10px);
-          height: ($size - 10px);
+          width: ($size - 0.5rem);
+          height: ($size - 0.5rem);
         }
       }
     }

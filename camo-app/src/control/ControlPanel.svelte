@@ -67,6 +67,7 @@
     }
 
     function saveColorPalette() {
+        showColorPicker = false
         let id = editingPaletteId || getUniqueStr()
         let palette = new ColorPalette(id, newPaletteName, newColors.map(c => c.color))
         Color.setUserPalette(palette);
@@ -100,23 +101,23 @@
         <ControlColumn>
             <div class="control-section">
                 <div class="control-section-title">Camo Pattern</div>
-                <div class="control-section-sub">
-                    <div>
-                        <label>
-                            <input type="radio" bind:group={camoPattern} value="m90p1">
-                            <span class="outside"><span class="inside"></span></span>
-                            <span class="radio-name">M90(1)</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input type="radio" bind:group={camoPattern} value="m90p2">
-                            <span class="outside"><span class="inside"></span></span>
-                            <span class="radio-name">M90(2)</span>
-                        </label>
-                        <div style="clear: both;"></div>
-                    </div>
-                </div>
+<!--                <div class="control-section-sub">-->
+<!--                    <div>-->
+<!--                        <label class="radio">-->
+<!--                            <input type="radio" bind:group={camoPattern} value="m90p1">-->
+<!--                            <span class="outside"><span class="inside"></span></span>-->
+<!--                            <span class="radio-name">M90(1)</span>-->
+<!--                        </label>-->
+<!--                    </div>-->
+<!--                    <div>-->
+<!--                        <label class="radio">-->
+<!--                            <input type="radio" bind:group={camoPattern} value="m90p2">-->
+<!--                            <span class="outside"><span class="inside"></span></span>-->
+<!--                            <span class="radio-name">M90(2)</span>-->
+<!--                        </label>-->
+<!--                        <div style="clear: both;"></div>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <div class="control-section-sub">
                     <span class="button" on:mousedown={handleRefresh}>Refresh</span>
                     <span class="button" on:mousedown={handleDownload}>Download</span>
@@ -154,8 +155,8 @@
                 </div>
                 <div class="control-section-sub">
                     {#each [...defaultPalettes] as [key, value] (key)}
-                        <div>
-                            <label>
+                        <div style="width: 100%; display: flex;">
+                            <label class="radio">
                                 <input type="radio" bind:group={colorPalette} value="{key}">
                                 <span class="outside"><span class="inside"></span></span>
                                 <span class="radio-name">{value.name}</span>
@@ -163,8 +164,8 @@
                         </div>
                     {/each}
                     {#each [...userPalettes] as [key, value] (key)}
-                        <div>
-                            <label>
+                        <div style="width: 100%; display: flex; align-items: center;">
+                            <label class="radio">
                                 <input type="radio" bind:group={colorPalette} value="{key}">
                                 <span class="outside"><span class="inside"></span></span>
                                 <span class="radio-name">{value.name}</span>
@@ -191,12 +192,14 @@
                         <div class="control-section-sub-title">Colors</div>
                         <span class="button full small" on:click={addNewColor}>Add Color</span>
                         {#each newColors as newColor, i (i) }
-                            <label>
-                                <input type="color" bind:value={newColor.color} on:input={updateEditingColors}>
-                                <span class="icon-button" on:click={handleDeleteColor(i)}>
-                                    <i class="far fa-trash-alt"></i>
-                                </span>
-                            </label>
+                            <div style="position: relative;">
+                                <label>
+                                    <input type="color" bind:value={newColor.color} on:input={updateEditingColors}>
+                                    <span class="icon-button" on:click={handleDeleteColor(i)}>
+                                        <i class="far fa-trash-alt"></i>
+                                    </span>
+                                </label>
+                            </div>
                         {/each}
                     </div>
                     <div class="control-section-sub">
@@ -214,7 +217,7 @@
     </div>
 </div>
 <style lang="scss">
-  //@import "../style/input";
+  @import "../style/input";
   $section-margin: 0.5rem;
 
   .control-panel {
@@ -222,9 +225,12 @@
     top: 0;
     left: 0;
     text-align: left;
+    height: 96%;
   }
   .control-columns {
     display: flex;
+    height: 100%;
+    align-items: flex-start;
   }
   .control-section {
     margin-bottom: 2.0rem;
@@ -302,5 +308,9 @@
   .icon-button {
     cursor: pointer;
     margin-left: 0.5rem;
+
+    &:hover {
+      color: #3c3c3c;
+    }
   }
 </style>

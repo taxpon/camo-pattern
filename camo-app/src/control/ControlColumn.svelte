@@ -14,6 +14,8 @@
     z-index: 20;
     overflow-y: scroll;
     width: 300px;
+    max-height: 100%;
+    box-sizing: border-box;
 
     &::-webkit-scrollbar {
       display: none;

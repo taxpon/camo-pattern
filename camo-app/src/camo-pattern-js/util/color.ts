@@ -32,16 +32,16 @@ export class Color {
                 "#3B3845", // Dark Gray
                 "#B2B096", // Ivory
             ]),)
-        Color._defaultPalettes.set(
-            "blue",
-            new ColorPalette("blue", "Blue", [
-                "#3770DB",
-                "#172F5C",
-                "#7B9FE0",
-                "#32415C",
-                "#2A56A8",
-            ]),
-        )
+        // Color._defaultPalettes.set(
+        //     "blue",
+        //     new ColorPalette("blue", "Blue", [
+        //         "#3770DB",
+        //         "#172F5C",
+        //         "#7B9FE0",
+        //         "#32415C",
+        //         "#2A56A8",
+        //     ]),
+        // )
         Color._defaultPalettes.set(
             "desert",
             new ColorPalette("desert", "Desert", [
@@ -51,16 +51,16 @@ export class Color {
                 "#6D4C2D"
             ]),
         )
-        Color._defaultPalettes.set(
-            "orange",
-            new ColorPalette("orange", "Orange", [
-                "#FF824D",
-                "#782400",
-                "#F74A00",
-                "#7A442C",
-                "#C73B00"
-            ]),
-        )
+        // Color._defaultPalettes.set(
+        //     "orange",
+        //     new ColorPalette("orange", "Orange", [
+        //         "#FF824D",
+        //         "#782400",
+        //         "#F74A00",
+        //         "#7A442C",
+        //         "#C73B00"
+        //     ]),
+        // )
         Color._defaultPalettes.set(
             "uc1",
             new ColorPalette("uc1", "UC1", [
@@ -79,14 +79,14 @@ export class Color {
                 "#424B50"
             ]),
         )
-        Color._defaultPalettes.set(
-            "bw",
-            new ColorPalette("bw", "BW", [
-                // https://store.undercoverism.com/undercovermen/item/detail/1_1_UC1A4508-4_1/Q02
-                "#FFFFFF",
-                "#000000"
-            ]),
-        )
+        // Color._defaultPalettes.set(
+        //     "bw",
+        //     new ColorPalette("bw", "BW", [
+        //         // https://store.undercoverism.com/undercovermen/item/detail/1_1_UC1A4508-4_1/Q02
+        //         "#FFFFFF",
+        //         "#000000"
+        //     ]),
+        // )
     }
 
     private static loadUserPalettes() {
