@@ -13,7 +13,7 @@
     background: rgba(128,128,128,.7);
     z-index: 20;
     overflow-y: scroll;
-    min-width: 300px;
+    width: 300px;
 
     &::-webkit-scrollbar {
       display: none;

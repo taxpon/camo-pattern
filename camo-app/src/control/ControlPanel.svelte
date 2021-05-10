@@ -15,6 +15,7 @@
 
     let n1 = 100;
     let n2 = 2;
+    let editingPaletteId = undefined;
     let newColors = [{color: "#000000"}];
     let newPaletteName;
 
@@ -43,6 +44,7 @@
         showColorPicker = true;
         newColors = [];
         newPaletteName = undefined;
+        editingPaletteId = undefined;
         addNewColor(false);
     }
 
@@ -64,11 +66,20 @@
         updateEditingColors();
     }
 
-    function addNewColorPalette() {
-        let id = getUniqueStr()
+    function saveColorPalette() {
+        let id = editingPaletteId || getUniqueStr()
         let palette = new ColorPalette(id, newPaletteName, newColors.map(c => c.color))
         Color.setUserPalette(palette);
         userPalettes = [...Color.getUserPalettes()]
+    }
+
+    function editColorPalette(value) {
+        showColorPicker = true;
+        colorPalette = editingPaletteId = value.id
+        newColors = value.colors.map(c => {
+            return {color: c}
+        })
+        newPaletteName = value.name
     }
 
     function deleteColorPalette(value) {
@@ -158,6 +169,9 @@
                                 <span class="outside"><span class="inside"></span></span>
                                 <span class="radio-name">{value.name}</span>
                             </label>
+                            <span class="icon-button" on:click={editColorPalette(value)}>
+                                <i class="fas fa-edit"></i>
+                            </span>
                             <span class="icon-button" on:click={deleteColorPalette(value)}>
                                 <i class="far fa-trash-alt"></i>
                             </span>
@@ -169,7 +183,7 @@
         {#if showColorPicker}
             <ControlColumn>
                 <div class="control-section">
-                    <div class="control-section-title" style="float: left;">New Color Palette</div>
+                    <div class="control-section-title" style="float: left;">Edit Color Palette</div>
                     <span class="button small" style="float: right;" on:mousedown={() => showColorPicker = false}>X Close</span>
                     <div style="clear: both;"></div>
 
@@ -192,7 +206,7 @@
                     <div class="control-section-sub" style="margin-top: 1rem;">
                         <button class="button full"
                                 disabled="{newColors.length < 2 || (newPaletteName && newPaletteName.length === 0)}"
-                                on:click={addNewColorPalette}>Add New Color Palette</button>
+                                on:click={saveColorPalette}>Save Color Palette</button>
                     </div>
                 </div>
             </ControlColumn>
@@ -224,6 +238,7 @@
     input[type=color] {
       width: 80%;
       margin-bottom: $section-margin;
+      max-width: 250px;
     }
 
     input[type=text] {
