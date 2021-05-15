@@ -1,4 +1,4 @@
-import {Point} from "./point"
+import type {Point} from "./point"
 
 export class Circle {
     constructor(private _center: Point, private _radius: number, private _color: string) {

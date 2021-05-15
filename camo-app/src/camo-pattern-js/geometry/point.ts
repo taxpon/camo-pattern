@@ -1,5 +1,3 @@
-import Dict = NodeJS.Dict;
-
 export class Point {
 
     private static _cache: {[id: string]: Point} = {}

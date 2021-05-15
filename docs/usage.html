@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1'>
+	<title>Camouflage Pattern JS</title>
+	<link rel='icon' type='image/png' href='images/favicon.ico'>
+	<link rel='stylesheet' href='global.css'>
+	<link rel='stylesheet' href='build/bundle.css'>
+	<script defer src='build/camo-pattern.js'></script>
+</head>
+<body>
+	<canvas width="500" height="500" id="camo-sample"></canvas>
+	<script type="module">
+		// import {CamoPattern} from "../src/camo-pattern-js";
+		import {Point} from './build/camo-pattern.js'
+		console.log(Point);
+
+		let canvas = document.getElementById("camo-sample");
+		let cp = new Point();
+	</script>
+</body>
+</html>

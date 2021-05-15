@@ -5,6 +5,7 @@ import {Util} from "../util/util";
 import {Triangle} from "../geometry/triangle";
 import type {Polygon} from "../geometry/polygon";
 import {IndexGenerator} from "../util/indexGenerator";
+import {Color} from "../util/color";
 
 export class M90Pattern2 extends BaseLogic {
 
@@ -26,7 +27,15 @@ export class M90Pattern2 extends BaseLogic {
         super(ctx);
     }
 
-    public draw(width: number, height: number, colIter: IterableIterator<String>, options: Object) {
+    public draw(width: number, height: number, colors: IterableIterator<String> | string[], options: Object) {
+        let colIter: IterableIterator<String>
+
+        if (Array.isArray(colors)) {
+            colIter = Color.colorGenerator(colors)
+        } else {
+            colIter = colors
+        }
+
         this.points = []
         const unit = 500
         const xGrid = Math.ceil(width / unit)
