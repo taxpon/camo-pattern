@@ -8,17 +8,26 @@
 	<link rel='stylesheet' href='global.css'>
 	<link rel='stylesheet' href='build/bundle.css'>
 	<script defer type="module" src='build/camo-pattern.js'></script>
+	<style>
+		canvas {
+			margin: 200px;
+			transition: transform .05s ease-out 0s;
+		}
+		canvas:hover {
+			transform: scale(1.04, 1.04);
+		}
+	</style>
 </head>
 <body>
 	<div style="display: flex;">
 		<div>
-			<canvas width="500" height="500" id="camo"></canvas>
+			<canvas width="200" height="200" id="camo"></canvas>
 			<div>
 				<button id="refresh">refresh</button>
 			</div>
 		</div>
 		<div>
-			<canvas width="500" height="500" id="camo2"></canvas>
+			<canvas width="200" height="200" id="camo2"></canvas>
 			<div>
 				<button id="refresh2">refresh</button>
 			</div>

@@ -1,8 +1,8 @@
 <script lang="ts">
     import {beforeUpdate, onDestroy, onMount} from "svelte";
-    import {M90Pattern1} from "../camo-pattern-js/drawing/m90Pattern1";
-    import {Color} from "../camo-pattern-js/util/color";
-    import {M90Pattern2} from "../camo-pattern-js/drawing/m90Pattern2";
+    import {M90Pattern1} from "../../../camo-pattern-js/src/drawing/m90Pattern1";
+    import {Color} from "../../../camo-pattern-js/src/util/color";
+    import {M90Pattern2} from "../../../camo-pattern-js/src/drawing/m90Pattern2";
     import {
         numPoints,
         campDepth,
@@ -12,7 +12,7 @@
         downloadSwitch,
         editingColors
     } from "../state/stores";
-    import {Point} from "../camo-pattern-js/geometry/point";
+    import {Point} from "../../../camo-pattern-js/src/geometry/point";
 
     export let pattern: string = "m90p2"
     export let color: string

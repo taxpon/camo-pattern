@@ -37,7 +37,7 @@ export default [
 			sourcemap: !production,
 			format: 'iife',
 			name: 'app',
-			file: 'public/build/bundle.js'
+			file: 'public/build/camo-app/bundle.js'
 		},
 		plugins: [
 			svelte({
@@ -63,7 +63,8 @@ export default [
 			commonjs(),
 			typescript({
 				sourceMap: !production,
-				inlineSources: !production
+				inlineSources: !production,
+				include: ['../**/src/**/*.ts']
 			}),
 
 			// In dev mode, call `npm run start` once
@@ -76,27 +77,6 @@ export default [
 
 			// If we're building for production (npm run build
 			// instead of npm run dev), minify
-			production && terser()
-		],
-		watch: {
-			clearScreen: false
-		}
-	},
-	{
-		input: 'src/camo-pattern-js/index.ts',
-		output: {
-			sourcemap: !production,
-			format: 'esm',
-			file: 'public/build/camo-pattern.js'
-		},
-		plugins: [
-			typescript({
-				sourceMap: !production,
-				inlineSources: !production,
-				tsconfig: "./tsconfig.lib.json"
-			}),
-			!production && serve(),
-			!production && livereload('public'),
 			production && terser()
 		],
 		watch: {

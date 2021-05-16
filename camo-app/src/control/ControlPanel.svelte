@@ -5,7 +5,7 @@
         redrawSwitch, mouseTrack, camoAnimate, downloadSwitch, editingColors
     } from "../state/stores";
     import {createEventDispatcher, onMount} from "svelte";
-    import {Color, ColorPalette} from "../camo-pattern-js/util/color"
+    import {Color, ColorPalette} from "../../../camo-pattern-js/src/util/color"
 
     export let camoPattern = "m90p2";
     export let colorPalette = "green";

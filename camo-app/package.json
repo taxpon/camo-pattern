@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "rm -rf public/build && rollup -c && rm -rf ../docs/* && cp -pr public/* ../docs",
+    "build": "rm -rf public/build/camo-app && rollup -c && rm -rf ../docs/* && cp -pr public/* ../docs",
     "dev": "rollup -c -w",
     "start": "sirv public --no-clear",
     "validate": "svelte-check"
