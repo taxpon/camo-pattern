@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "target": "es6",
+    "module": "es2015",
+    "lib": ["es2018", "dom", "esnext"]
+  },
+  "include": ["src/camo-pattern-js/*"],
+  "exclude": ["node_modules/*", "__sapper__/*", "public/*"]
+}
