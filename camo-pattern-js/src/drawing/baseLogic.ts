@@ -2,10 +2,11 @@
 import type {Circle} from "../geometry/circle";
 import type {Point} from "../geometry/point";
 import type {Polygon} from "../geometry/polygon";
+import type {ColorItem} from "../util/color";
 
 export abstract class BaseLogic {
     constructor(private ctx) {}
-    abstract draw(width: number, height: number, colIter: IterableIterator<string>, options: Object)
+    abstract draw(width: number, height: number, colIter: IterableIterator<ColorItem>, options: Object)
     abstract startAnimate()
     abstract stopAnimate()
     abstract handleMouseMove(p: Point)

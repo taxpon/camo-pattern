@@ -1,6 +1,7 @@
 import {BaseLogic} from "./baseLogic";
 import {Polygon} from "../geometry/polygon";
 import {Point} from "../geometry/point";
+import type {ColorItem} from "../util/color";
 
 export class M90Pattern1 extends BaseLogic {
     startAnimate() {
@@ -10,7 +11,7 @@ export class M90Pattern1 extends BaseLogic {
     handleMouseMove(p: Point) {
     }
 
-    public draw(width: number, height: number, colIter: IterableIterator<string>) {
+    public draw(width: number, height: number, colIter: IterableIterator<ColorItem>) {
         // let colIter = Color.colorGeneratorFromPalette(State.getState("palette", "green"));
         const unit = 500;
         let xNum = Math.ceil(width / unit);
@@ -34,7 +35,7 @@ export class M90Pattern1 extends BaseLogic {
                 }
                 let p2 = new Polygon(
                     Point.randomPoints2Of(x, y, unit, num)
-                    , curr.value)
+                    , curr.value.value)
                 this.drawPolygon(p2);
             }
         }
@@ -61,7 +62,7 @@ export class M90Pattern1 extends BaseLogic {
                 }
                 let p2 = new Polygon(
                     Point.randomPoints2Of(x, y, unit2, num)
-                    , curr.value)
+                    , curr.value.value)
                 this.drawPolygon(p2);
             }
         }

@@ -5,15 +5,15 @@
         redrawSwitch, mouseTrack, camoAnimate, downloadSwitch, editingColors
     } from "../state/stores";
     import {createEventDispatcher, onMount} from "svelte";
-    import {Color, ColorPalette} from "../../../camo-pattern-js/src/util/color"
+    import {Color, ColorItem, ColorPalette} from "../../../camo-pattern-js/src/util/color"
 
     export let camoPattern = "m90p2";
-    export let colorPalette = "green";
+    export let colorPalette = "desert";
     let defaultPalettes = [...Color.getDefaultPalettes()];
     let userPalettes = [...Color.getUserPalettes()];
     let showColorPicker = false;
 
-    let n1 = 100;
+    let n1 = 500;
     let n2 = 2;
     let editingPaletteId = undefined;
     let newColors = [{color: "#000000"}];
@@ -69,7 +69,7 @@
     function saveColorPalette() {
         showColorPicker = false
         let id = editingPaletteId || getUniqueStr()
-        let palette = new ColorPalette(id, newPaletteName, newColors.map(c => c.color))
+        let palette = new ColorPalette(id, newPaletteName, newColors.map(c => new ColorItem(c.color)));
         Color.setUserPalette(palette);
         userPalettes = [...Color.getUserPalettes()]
     }
@@ -131,7 +131,7 @@
                         Number of Points (<span id="num-points-val">{n1}</span>)
                     </div>
                     <div>
-                        <input type="range" name="num-points" min="1" max="500" bind:value={n1}>
+                        <input type="range" name="num-points" min="1" max="1000" bind:value={n1}>
                     </div>
                 </div>
                 <div class="control-section-sub">

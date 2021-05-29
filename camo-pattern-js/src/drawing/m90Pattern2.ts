@@ -5,7 +5,7 @@ import {Util} from "../util/util";
 import {Triangle} from "../geometry/triangle";
 import type {Polygon} from "../geometry/polygon";
 import {IndexGenerator} from "../util/indexGenerator";
-import {Color} from "../util/color";
+import {Color, ColorItem} from "../util/color";
 
 export class M90Pattern2 extends BaseLogic {
 
@@ -27,8 +27,8 @@ export class M90Pattern2 extends BaseLogic {
         super(ctx);
     }
 
-    public draw(width: number, height: number, colors: IterableIterator<String> | string[], options: Object) {
-        let colIter: IterableIterator<String>
+    public draw(width: number, height: number, colors: IterableIterator<ColorItem> | string[], options: Object) {
+        let colIter: IterableIterator<ColorItem>
 
         if (Array.isArray(colors)) {
             colIter = Color.colorGenerator(colors)
@@ -48,7 +48,8 @@ export class M90Pattern2 extends BaseLogic {
                 if (this.visitMap[triangle.keyIndex]) {
                     continue
                 }
-                this.makeCamouflage(triangle, colIter.next().value, options["camo_depth"])
+                const currentColor: ColorItem = colIter.next().value;
+                this.makeCamouflage(triangle, currentColor, options["camo_depth"])
             }
             return;
         }
@@ -103,7 +104,7 @@ export class M90Pattern2 extends BaseLogic {
                 })
                 .filter(x => x)
                 .forEach(edge => {
-                    triangles.push(new Triangle([edge.start, edge.end, p], colIter.next().value))
+                    triangles.push(new Triangle([edge.start, edge.end, p], colIter.next().value.value))
                 })
         })
 
@@ -119,18 +120,19 @@ export class M90Pattern2 extends BaseLogic {
             if (this.visitMap[triangle.keyIndex]) {
                 continue
             }
-            this.makeCamouflage(triangle, colIter.next().value, options["camo_depth"])
+            const currentColor: ColorItem = colIter.next().value;
+            this.makeCamouflage(triangle, currentColor, Math.ceil(options["camo_depth"] * currentColor.sizeFactor));
         }
     }
 
-    private makeCamouflage(triangle: Triangle, color: string, depth: number, originalDepth: number = null) {
+    private makeCamouflage(triangle: Triangle, color: ColorItem, depth: number, originalDepth: number = null) {
         originalDepth = originalDepth || depth
-        triangle.color = color
+        triangle.color = color.value
 
-        this.visitMap[triangle.keyIndex] = color
+        this.visitMap[triangle.keyIndex] = color.value
 
         if (depth == 0) {
-            this.drawPolygon(triangle, color)
+            this.drawPolygon(triangle, color.value)
             return
         }
 
@@ -172,7 +174,7 @@ export class M90Pattern2 extends BaseLogic {
                 this.drawPolygon(triangle, triangle.color, triangle.color)
             }
         } else {
-            this.drawPolygon(triangle, color)
+            this.drawPolygon(triangle, color.value)
         }
     }
 

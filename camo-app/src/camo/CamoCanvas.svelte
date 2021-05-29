@@ -86,7 +86,7 @@
     function clearCanvas(width, height, colorIter = undefined) {
         canvas.setAttribute("width", width.toString());
         canvas.setAttribute("height", height.toString());
-        ctx.fillStyle = colorIter ?  colorIter.next().value : Color.getBaseColorFromPalette(color);
+        ctx.fillStyle = colorIter ?  colorIter.next().value.value : Color.getBaseColorFromPalette(color);
         ctx.fillRect(0, 0, width, height);
     }
 
