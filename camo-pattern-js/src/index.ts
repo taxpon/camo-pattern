@@ -2,6 +2,7 @@ import type {BaseLogic} from "./drawing/baseLogic";
 import {M90Pattern1} from "./drawing/m90Pattern1";
 import {M90Pattern2} from "./drawing/m90Pattern2";
 import {Point} from "./geometry/point";
+import {WebGLUtil} from "./webgl/WebGLUtil";
 
 interface CamoPatternOptions {
     asDict(): {[key: string]: any}
@@ -37,13 +38,18 @@ export class CamoPattern {
 
     // Constant
     private readonly ctx: CanvasRenderingContext2D
+    private readonly gl: WebGLRenderingContext
     private readonly patternMap: { [name: string]: any} = {
         "m90p1": M90Pattern1,
         "m90p2": M90Pattern2
     }
 
-    constructor(private canvas: HTMLCanvasElement) {
-        this.ctx = canvas.getContext("2d");
+    constructor(private canvas: HTMLCanvasElement, private isWebGL: boolean = false) {
+        if (!isWebGL) {
+            this.ctx = canvas.getContext("2d");
+        } else {
+            this.gl = canvas.getContext("webgl");
+        }
         this._height = Number(canvas.getAttribute("width"));
         this._width = Number(canvas.getAttribute("height"));
         this._colors = [
@@ -119,6 +125,61 @@ export class CamoPattern {
                 .replace("image/png", "image/octet-stream"));
         link.click();
         document.body.removeChild(link);
+    }
+
+    webGLConfigure(vertexShaderSource: string, fragmentShaderSource: string): WebGLProgram {
+        const vertexShader = WebGLUtil.createShader(this.gl, this.gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = WebGLUtil.createShader(this.gl, this.gl.FRAGMENT_SHADER, fragmentShaderSource);
+        console.log(vertexShader, fragmentShader);
+        const program = this.createProgram(this.gl, vertexShader, fragmentShader);
+
+        const positions = [
+            0, 0,
+            0, 0.5,
+            0.7, 0,
+        ];
+        const [positionAttributeLocation, positionBuffer] = WebGLUtil.createAttribute(
+            this.gl, program, "a_position", new Float32Array(positions));
+
+        // Rendering
+        this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+        this.gl.clearColor(0, 0, 0, 0);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+        this.gl.useProgram(program);
+
+        this.gl.enableVertexAttribArray(positionAttributeLocation);
+        // Bind the position buffer.
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+
+// Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+        var size = 2;          // 2 components per iteration
+        var type = this.gl.FLOAT;   // the data is 32bit floats
+        var normalize = false; // don't normalize the data
+        var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+        var offset = 0;        // start at the beginning of the buffer
+        this.gl.vertexAttribPointer(
+            positionAttributeLocation, size, type, normalize, stride, offset)
+
+        var primitiveType = this.gl.TRIANGLES;
+        var offset = 0;
+        var count = 3;
+        this.gl.drawArrays(primitiveType, offset, count);
+
+        return program;
+    }
+
+    private createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader) {
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        const success = gl.getProgramParameter(program, gl.LINK_STATUS);
+        if (success) {
+            return program;
+        }
+
+        console.log(gl.getProgramInfoLog(program));
+        gl.deleteProgram(program);
     }
 
     private drawPattern(width: number, height: number, colors = undefined, option: CamoPatternOptions) {

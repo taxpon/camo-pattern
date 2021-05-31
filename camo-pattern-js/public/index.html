@@ -4,10 +4,10 @@
 	<meta charset='utf-8'>
 	<meta name='viewport' content='width=device-width,initial-scale=1'>
 	<title>Camouflage Pattern JS</title>
-	<link rel='icon' type='image/png' href='images/favicon.ico'>
-	<link rel='stylesheet' href='global.css'>
-	<link rel='stylesheet' href='build/bundle.css'>
-	<script defer type="module" src='build/camo-pattern.js'></script>
+<!--	<link rel='icon' type='image/png' href='images/favicon.ico'>-->
+<!--	<link rel='stylesheet' href='global.css'>-->
+<!--	<link rel='stylesheet' href='build/bundle.css'>-->
+	<script defer type="module" src='build/lib/camo-pattern.js'></script>
 	<style>
 		canvas {
 			margin: 200px;
@@ -33,24 +33,62 @@
 			</div>
 		</div>
 	</div>
-	<script defer type="module">
-		import {CamoPattern} from "./build/camo-pattern.js";
-		let canvas = document.getElementById("camo");
-		let canvas2 = document.getElementById("camo2");
-		let c = new CamoPattern(canvas);
-		let c2 = new CamoPattern(canvas2);
-		c2.colors = ["#FF0000", "#00FF00", "#0000FF", '#FFFFFF']
-		c.draw();
-		c.mouseTrackEnabled = true;
-		c2.draw();
-		c.startAnimate();
-		document.getElementById("refresh").onclick = () => {
-			c.draw();
-		}
-		document.getElementById("refresh2").onclick = () => {
-			c2.draw();
-		}
-		canvas.onmousemove = c.handleMouseMove.bind(c);
+	<script id="vertex-shader-2d" type="notjs">
+	  // an attribute will receive data from a buffer
+	  attribute vec4 a_position;
+
+	  // all shaders have a main function
+	  void main() {
+
+		// gl_Position is a special variable a vertex shader
+		// is responsible for setting
+		gl_Position = a_position;
+	  }
 	</script>
+	<script id="fragment-shader-2d" type="notjs">
+	  // fragment shaders don't have a default precision so we need
+	  // to pick one. mediump is a good default
+	  precision mediump float;
+
+	  void main() {
+		// gl_FragColor is a special variable a fragment shader
+		// is responsible for setting
+		gl_FragColor = vec4(1, 0, 0.5, 1); // return reddish-purple
+	  }
+
+	</script>
+	<script defer type="module">
+		import {CamoPattern} from "./build/lib/camo-pattern.js";
+		let canvas = document.getElementById("camo");
+		// let gl = canvas.getContext("webgl");
+		// if (!gl) {
+		// 	console.error("WebGL is not supported on your environment");
+		// }
+		var vertexShaderSource = document.querySelector("#vertex-shader-2d").text;
+		var fragmentShaderSource = document.querySelector("#fragment-shader-2d").text;
+		// let vertShader = WebGLUtil.createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+
+		let c = new CamoPattern(canvas, true);
+		let program = c.webGLConfigure(vertexShaderSource, fragmentShaderSource);
+		console.log(program);
+
+		// let canvas = document.getElementById("camo");
+		// let canvas2 = document.getElementById("camo2");
+		// let c = new CamoPattern(canvas);
+		// let c2 = new CamoPattern(canvas2);
+		// c2.colors = ["#FF0000", "#00FF00", "#0000FF", '#FFFFFF']
+		// c.draw();
+		// c.mouseTrackEnabled = true;
+		// c2.draw();
+		// c.startAnimate();
+		// document.getElementById("refresh").onclick = () => {
+		// 	c.draw();
+		// }
+		// document.getElementById("refresh2").onclick = () => {
+		// 	c2.draw();
+		// }
+		// canvas.onmousemove = c.handleMouseMove.bind(c);
+	</script>
+
 </body>
 </html>
