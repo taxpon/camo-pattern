@@ -3,6 +3,7 @@ import {M90Pattern1} from "./drawing/m90Pattern1";
 import {M90Pattern2} from "./drawing/m90Pattern2";
 import {Point} from "./geometry/point";
 import {WebGLUtil} from "./webgl/WebGLUtil";
+import RGBA from "./color/RGBA";
 
 interface CamoPatternOptions {
     asDict(): {[key: string]: any}
@@ -130,45 +131,62 @@ export class CamoPattern {
     webGLConfigure(vertexShaderSource: string, fragmentShaderSource: string): WebGLProgram {
         const vertexShader = WebGLUtil.createShader(this.gl, this.gl.VERTEX_SHADER, vertexShaderSource);
         const fragmentShader = WebGLUtil.createShader(this.gl, this.gl.FRAGMENT_SHADER, fragmentShaderSource);
-        console.log(vertexShader, fragmentShader);
-        const program = this.createProgram(this.gl, vertexShader, fragmentShader);
+        const program = this.wenGLCreateProgram(this.gl, vertexShader, fragmentShader);
+        this.gl.useProgram(program);
+
+        let colorUniformLocation = this.gl.getUniformLocation(program, "u_color");
+        this.gl.uniform4f(colorUniformLocation, 1, 0, 0, 1);
 
         const positions = [
             0, 0,
             0, 0.5,
-            0.7, 0,
+            1, 0,
+            //
+            // 0, 0,
+            // 0.5, 1,
+            // 1, 0.5
         ];
-        const [positionAttributeLocation, positionBuffer] = WebGLUtil.createAttribute(
-            this.gl, program, "a_position", new Float32Array(positions));
+        const [positionAttributeLocation, positionBuffer] = WebGLUtil.createAttribute2f(
+            this.gl, program, "a_position", new Float32Array([]));
+        const [vertexColorAttributeLocation, vertexColorBuffer] = WebGLUtil.createAttribute4f(this.gl, program, "a_vertex_color", new Float32Array([]));
+
 
         // Rendering
+        // Clear canvas
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clearColor(0, 0, 0, 0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-        this.gl.useProgram(program);
 
-        this.gl.enableVertexAttribArray(positionAttributeLocation);
-        // Bind the position buffer.
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
-
-// Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-        var size = 2;          // 2 components per iteration
-        var type = this.gl.FLOAT;   // the data is 32bit floats
-        var normalize = false; // don't normalize the data
-        var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-        var offset = 0;        // start at the beginning of the buffer
-        this.gl.vertexAttribPointer(
-            positionAttributeLocation, size, type, normalize, stride, offset)
-
-        var primitiveType = this.gl.TRIANGLES;
-        var offset = 0;
-        var count = 3;
-        this.gl.drawArrays(primitiveType, offset, count);
+        this.drawTriangle(
+            [new Point(0, 0), new Point(0, 0.5), new Point(1, 0)],
+            [new RGBA(1, 0, 0), new RGBA(0, 1, 0), new RGBA(0, 0, 1)],
+            positionBuffer,
+            vertexColorBuffer
+        );
 
         return program;
     }
 
-    private createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader) {
+    private drawTriangle(points: Point[], colors: RGBA[], positionBuffer, vertexColorBuffer) {
+        const pointsMat = points.flatMap(p => {
+            return p.vec;
+        });
+        const colorsMat = colors.flatMap(c => {
+            return c.vec;
+        })
+
+        // Put vertexColor
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexColorBuffer);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(colorsMat), this.gl.STATIC_DRAW);
+
+        // Put position
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pointsMat), this.gl.STATIC_DRAW);
+        console.log(pointsMat, colorsMat);
+        this.gl.drawArrays(this.gl.TRIANGLES, 0, 3);
+    }
+
+    private wenGLCreateProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader) {
         const program = gl.createProgram();
         gl.attachShader(program, vertexShader);
         gl.attachShader(program, fragmentShader);
@@ -180,6 +198,10 @@ export class CamoPattern {
 
         console.log(gl.getProgramInfoLog(program));
         gl.deleteProgram(program);
+    }
+
+    private webGLRender(gl: WebGLRenderingContext) {
+
     }
 
     private drawPattern(width: number, height: number, colors = undefined, option: CamoPatternOptions) {

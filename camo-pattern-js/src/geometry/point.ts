@@ -37,6 +37,10 @@ export class Point {
         return this._index
     }
 
+    get vec(): number[] {
+        return [this.x, this.y]
+    }
+
     public dist(another: Point): number {
         return Math.sqrt(Math.pow(this.x - another.x, 2) + Math.pow(this.y - another.y, 2))
     }
