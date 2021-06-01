@@ -139,7 +139,7 @@ export class M90Pattern2 extends BaseLogic {
         this.visitMap[triangle.keyIndex] = color.value
 
         if (depth == 0) {
-            this.renderer.drawPolygon(triangle, color.value, undefined)
+            this.renderer.drawPolygon(triangle, color.value)
             return
         }
 
@@ -181,7 +181,7 @@ export class M90Pattern2 extends BaseLogic {
                 this.renderer.drawPolygon(triangle, triangle.color, triangle.color);
             }
         } else {
-            this.renderer.drawPolygon(triangle, color.value, undefined);
+            this.renderer.drawPolygon(triangle, color.value);
         }
     }
 
@@ -202,11 +202,11 @@ export class M90Pattern2 extends BaseLogic {
 
         this.triangles.forEach(triangle => {
             if (this.isActiveTriangle(triangle)) {
-                this.renderer.drawPolygon(triangle, "red", undefined);
+                this.renderer.drawPolygon(triangle, "red");
             } else if (this.adjacentPolygons && this.adjacentPolygons[triangle.keyIndex]) {
-                this.renderer.drawPolygon(triangle, "blue", undefined);
+                this.renderer.drawPolygon(triangle, "blue");
             } else {
-                this.renderer.drawPolygon(triangle, undefined, undefined);
+                this.renderer.drawPolygon(triangle);
             }
         })
     }
@@ -215,15 +215,15 @@ export class M90Pattern2 extends BaseLogic {
         this.triangles.forEach(triangle => {
             if (triangle.isContaining(p)) {
                 this.updateActiveTriangle(triangle)
-                this.renderer.drawPolygon(triangle, "red", undefined)
+                this.renderer.drawPolygon(triangle, "red")
             } else {
-                this.renderer.drawPolygon(triangle, undefined, undefined)
+                this.renderer.drawPolygon(triangle)
             }
         })
 
         // Overwrite adjacent polygons
         Object.keys(this.adjacentPolygons).forEach(k => {
-            this.renderer.drawPolygon(this.adjacentPolygons[k], "blue", undefined);
+            this.renderer.drawPolygon(this.adjacentPolygons[k], "blue");
         })
     }
 
@@ -236,7 +236,7 @@ export class M90Pattern2 extends BaseLogic {
                 }
                 this.edgeMap[e.keyIndex].push(triangle)
             })
-            this.renderer.drawPolygon(triangle, undefined, undefined);
+            this.renderer.drawPolygon(triangle);
         })
     }
 

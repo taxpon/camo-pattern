@@ -18,7 +18,7 @@ export class WebGLRenderer implements Renderer {
         this.configureWebGL();
     }
 
-    drawPolygon(poly: Polygon, color: string, strokeColor: string) {
+    drawPolygon(poly: Polygon, color?: string, strokeColor?: string) {
         // Put vertexColor
         const dummyColors = poly.points.flatMap(p => {
             return new RGBA(Math.random(), Math.random(), Math.random()).vec;
