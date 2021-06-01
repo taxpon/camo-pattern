@@ -6,9 +6,12 @@ import {Triangle} from "../geometry/triangle";
 import type {Polygon} from "../geometry/polygon";
 import {IndexGenerator} from "../util/indexGenerator";
 import {Color, ColorItem} from "../util/color";
+import {Renderer} from "./renderer/Renderer";
+import {Canvas2DRenderer} from "./renderer/Canvas2DRenderer";
 
 export class M90Pattern2 extends BaseLogic {
 
+    private renderer: Renderer
     private points: Array<Point>
     private triangles: Array<Triangle>
     private triangleAreas: Array<number>
@@ -23,8 +26,13 @@ export class M90Pattern2 extends BaseLogic {
     // For animation
     private interval: ReturnType<typeof setTimeout>;
 
-    constructor(ctx) {
+    constructor(ctx, renderer: Renderer) {
         super(ctx);
+        if (renderer === undefined) {
+            this.renderer = new Canvas2DRenderer(ctx);
+        } else {
+            this.renderer = renderer;
+        }
     }
 
     public draw(width: number, height: number, colors: IterableIterator<ColorItem> | string[], options: Object) {
@@ -72,7 +80,6 @@ export class M90Pattern2 extends BaseLogic {
         // Circumcircle
         const r = Math.sqrt((width * width + height * height)) / 2
         const center = new Point(width / 2, height / 2)
-        this.drawCircle(new Circle(center, r, "rgba(1, 1, 1, 0)"))
 
         // Circumtriangle
         const p1 = new Point(center.x - Math.sqrt(3) * r, center.y - r, IndexGenerator.incrementAndGet())
@@ -132,7 +139,7 @@ export class M90Pattern2 extends BaseLogic {
         this.visitMap[triangle.keyIndex] = color.value
 
         if (depth == 0) {
-            this.drawPolygon(triangle, color.value)
+            this.renderer.drawPolygon(triangle, color.value, undefined)
             return
         }
 
@@ -171,10 +178,10 @@ export class M90Pattern2 extends BaseLogic {
             } else {
                 // Copy color from one of adjacent triangles
                 triangle.color = this.visitMap[adjacentTriangles[0].keyIndex]
-                this.drawPolygon(triangle, triangle.color, triangle.color)
+                this.renderer.drawPolygon(triangle, triangle.color, triangle.color);
             }
         } else {
-            this.drawPolygon(triangle, color.value)
+            this.renderer.drawPolygon(triangle, color.value, undefined);
         }
     }
 
@@ -195,11 +202,11 @@ export class M90Pattern2 extends BaseLogic {
 
         this.triangles.forEach(triangle => {
             if (this.isActiveTriangle(triangle)) {
-                this.drawPolygon(triangle, "red")
+                this.renderer.drawPolygon(triangle, "red", undefined);
             } else if (this.adjacentPolygons && this.adjacentPolygons[triangle.keyIndex]) {
-                this.drawPolygon(triangle, "blue")
+                this.renderer.drawPolygon(triangle, "blue", undefined);
             } else {
-                this.drawPolygon(triangle)
+                this.renderer.drawPolygon(triangle, undefined, undefined);
             }
         })
     }
@@ -208,15 +215,15 @@ export class M90Pattern2 extends BaseLogic {
         this.triangles.forEach(triangle => {
             if (triangle.isContaining(p)) {
                 this.updateActiveTriangle(triangle)
-                this.drawPolygon(triangle, "red")
+                this.renderer.drawPolygon(triangle, "red", undefined)
             } else {
-                this.drawPolygon(triangle)
+                this.renderer.drawPolygon(triangle, undefined, undefined)
             }
         })
 
         // Overwrite adjacent polygons
         Object.keys(this.adjacentPolygons).forEach(k => {
-            this.drawPolygon(this.adjacentPolygons[k], "blue")
+            this.renderer.drawPolygon(this.adjacentPolygons[k], "blue", undefined);
         })
     }
 
@@ -229,7 +236,7 @@ export class M90Pattern2 extends BaseLogic {
                 }
                 this.edgeMap[e.keyIndex].push(triangle)
             })
-            this.drawPolygon(triangle)
+            this.renderer.drawPolygon(triangle, undefined, undefined);
         })
     }
 

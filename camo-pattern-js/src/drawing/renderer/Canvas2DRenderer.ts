@@ -1,17 +1,11 @@
+import {Renderer} from "./Renderer";
+import {Polygon} from "../../geometry/polygon";
 
-import type {Circle} from "../geometry/circle";
-import type {Point} from "../geometry/point";
-import type {Polygon} from "../geometry/polygon";
-import type {ColorItem} from "../util/color";
+export class Canvas2DRenderer implements Renderer {
+    constructor(private ctx: CanvasRenderingContext2D) {
+    }
 
-export abstract class BaseLogic {
-    constructor(private ctx) {}
-    abstract draw(width: number, height: number, colIter: IterableIterator<ColorItem>, options: Object)
-    abstract startAnimate()
-    abstract stopAnimate()
-    abstract handleMouseMove(p: Point)
-
-    protected drawPolygon(poly: Polygon, color: string = undefined, strokeColor: string = undefined) {
+    drawPolygon(poly: Polygon, color: string = undefined, strokeColor: string = undefined) {
         if (color) {
             this.ctx.fillStyle = color;
             this.ctx.strokeStyle = strokeColor || color;

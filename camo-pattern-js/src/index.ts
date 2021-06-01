@@ -11,6 +11,7 @@ import defaultVertexShaderSource from "./webgl/glsl/vshader.glsl";
 
 // @ts-ignore
 import defaultFragmentShaderSource from "./webgl/glsl/fshader.glsl";
+import {WebGLRenderer} from "./drawing/renderer/WebGLRenderer";
 
 interface CamoPatternOptions {
     asDict(): {[key: string]: any}
@@ -89,7 +90,7 @@ export class CamoPattern {
     }
 
     draw(width: number = undefined, height: number = undefined, colors: string[] = undefined, option: CamoPatternOptions = undefined) {
-        if (!this.ctx) return;
+        if (!this.ctx && !this.gl) return;
 
         const _width = width || this._width;
         const _height = height || this._height;
@@ -135,83 +136,6 @@ export class CamoPattern {
         document.body.removeChild(link);
     }
 
-    webGLConfigure(vertexShaderSource: string = undefined, fragmentShaderSource: string = undefined): WebGLProgram {
-        if (vertexShaderSource === undefined) {
-            vertexShaderSource = defaultVertexShaderSource;
-        }
-        if (fragmentShaderSource === undefined) {
-            fragmentShaderSource = defaultFragmentShaderSource;
-        }
-        const vertexShader = WebGLUtil.createShader(this.gl, this.gl.VERTEX_SHADER, vertexShaderSource);
-        const fragmentShader = WebGLUtil.createShader(this.gl, this.gl.FRAGMENT_SHADER, fragmentShaderSource);
-        const program = this.wenGLCreateProgram(this.gl, vertexShader, fragmentShader);
-        this.gl.useProgram(program);
-
-        let colorUniformLocation = this.gl.getUniformLocation(program, "u_color");
-        this.gl.uniform4f(colorUniformLocation, 1, 0, 0, 1);
-
-        let resolutionUniformLocation = this.gl.getUniformLocation(program, "u_resolution");
-        this.gl.uniform2f(resolutionUniformLocation, this.gl.canvas.width, this.gl.canvas.height);
-
-        let t = new Triangle([
-            new Point(0, 0),
-            new Point(400, 200),
-            new Point(200, 400)
-        ], undefined, [
-            new RGBA(1, 0, 0),
-            new RGBA(0, 1, 0),
-            new RGBA(0, 0, 1)
-        ]);
-
-        const [positionAttributeLocation, positionBuffer] = WebGLUtil.createAttribute2f(
-            this.gl, program, "a_position", new Float32Array([]));
-        const [vertexColorAttributeLocation, vertexColorBuffer] = WebGLUtil.createAttribute4f(this.gl, program, "a_vertex_color", new Float32Array([]));
-
-
-        // Rendering
-        // Clear canvas
-        this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
-        this.gl.clearColor(0, 0, 0, 0);
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-
-        this.drawTriangle2(t, positionBuffer, vertexColorBuffer);
-
-        return program;
-    }
-
-    private drawTriangle2(triangle: Triangle, positionBuffer, vertexColorBuffer) {
-        // Put vertexColor
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexColorBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER,
-            new Float32Array(triangle.colors.flatMap(c => c.vec)), this.gl.STATIC_DRAW);
-
-        // Put position
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER,
-            new Float32Array(triangle.points.flatMap(p => p.vec)), this.gl.STATIC_DRAW);
-
-        // Draw
-        this.gl.drawArrays(this.gl.TRIANGLES, 0, 3);
-    }
-
-    private wenGLCreateProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader) {
-        const program = gl.createProgram();
-        gl.attachShader(program, vertexShader);
-        gl.attachShader(program, fragmentShader);
-        gl.linkProgram(program);
-        const success = gl.getProgramParameter(program, gl.LINK_STATUS);
-        if (success) {
-            return program;
-        }
-
-        console.log(gl.getProgramInfoLog(program));
-        gl.deleteProgram(program);
-    }
-
-    private webGLRender(gl: WebGLRenderingContext) {
-
-    }
-
     private drawPattern(width: number, height: number, colors = undefined, option: CamoPatternOptions) {
         const logic = this.getPatternLogic(this._pattern);
         const _option = option ? option.asDict() : {};
@@ -222,13 +146,20 @@ export class CamoPattern {
         this.canvas.setAttribute("width", width.toString());
         this.canvas.setAttribute("height", height.toString());
         // this.ctx.fillStyle = colors ?  colors.next().value : Color.getBaseColorFromPalette(color);
-        this.ctx.fillStyle = colors[0];
-        this.ctx.fillRect(0, 0, width, height);
+        if (this.ctx !== undefined) {
+            this.ctx.fillStyle = colors[0];
+            this.ctx.fillRect(0, 0, width, height);
+        }
     }
 
     private getPatternLogic(pattern: string) {
         if (this.patterns[pattern] === undefined) {
-            this.patterns[pattern] = new this.patternMap[pattern](this.ctx);
+            if (this.isWebGL) {
+                const renderer = new WebGLRenderer(this.gl);
+                this.patterns[pattern] = new this.patternMap[pattern](this.ctx, renderer);
+            } else {
+                this.patterns[pattern] = new this.patternMap[pattern](this.gl);
+            }
         }
         return this.patterns[pattern];
     }

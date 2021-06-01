@@ -29,18 +29,18 @@
 		import {CamoPattern} from "./build/lib/camo-pattern.js";
 		let canvas = document.getElementById("camo");
 		let c = new CamoPattern(canvas, true);
-		let program = c.webGLConfigure();
-		console.log(program);
+		// let program = c.webGLConfigure();
+		// console.log(program);
 
 		// let canvas = document.getElementById("camo");
 		// let canvas2 = document.getElementById("camo2");
 		// let c = new CamoPattern(canvas);
 		// let c2 = new CamoPattern(canvas2);
 		// c2.colors = ["#FF0000", "#00FF00", "#0000FF", '#FFFFFF']
-		// c.draw();
-		// c.mouseTrackEnabled = true;
+		c.draw();
+		c.mouseTrackEnabled = true;
 		// c2.draw();
-		// c.startAnimate();
+		c.startAnimate();
 		// document.getElementById("refresh").onclick = () => {
 		// 	c.draw();
 		// }
