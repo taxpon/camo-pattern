@@ -2,6 +2,7 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import typescript from '@rollup/plugin-typescript';
 import scss from "rollup-plugin-scss";
+import glsl from 'rollup-plugin-glsl';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -43,7 +44,10 @@ export default [
 			scss(),
 			!production && serve(),
 			!production && livereload('public'),
-			production && terser()
+			production && terser(),
+			glsl({
+				include: "src/webgl/glsl/**/*.glsl"
+			})
 		],
 		watch: {
 			clearScreen: false

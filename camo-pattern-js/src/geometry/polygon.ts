@@ -1,4 +1,5 @@
 import {Point} from "./point"
+import RGBA from "../color/RGBA";
 
 export class Polygon {
     private _center: Point
@@ -7,7 +8,10 @@ export class Polygon {
     private maxX: number
     private maxY: number
 
-    constructor(private _points: Array<Point>, private _color: string, private _strokeColor: string = undefined) {
+    constructor(private _points: Array<Point>,
+                private _color: string,
+                private _strokeColor: string = undefined,
+                private _colors: Array<RGBA> = []) {
         this._center = this._points.reduce((prev, cur, i, arr) => {
             return new Point(prev.x + cur.x, prev.y + cur.y);
         }).div(this._points.length)
@@ -17,11 +21,14 @@ export class Polygon {
     get points() {
         return this._points;
     }
-    get color() {
+    get color(): string {
         return this._color;
     }
     set color(val: string) {
         this._color = val
+    }
+    get colors(): Array<RGBA> {
+        return this._colors
     }
     get strokeColor() {
         return this._strokeColor

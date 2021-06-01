@@ -4,6 +4,13 @@ import {M90Pattern2} from "./drawing/m90Pattern2";
 import {Point} from "./geometry/point";
 import {WebGLUtil} from "./webgl/WebGLUtil";
 import RGBA from "./color/RGBA";
+import {Triangle} from "./geometry/triangle";
+
+// @ts-ignore
+import defaultVertexShaderSource from "./webgl/glsl/vshader.glsl";
+
+// @ts-ignore
+import defaultFragmentShaderSource from "./webgl/glsl/fshader.glsl";
 
 interface CamoPatternOptions {
     asDict(): {[key: string]: any}
@@ -128,7 +135,13 @@ export class CamoPattern {
         document.body.removeChild(link);
     }
 
-    webGLConfigure(vertexShaderSource: string, fragmentShaderSource: string): WebGLProgram {
+    webGLConfigure(vertexShaderSource: string = undefined, fragmentShaderSource: string = undefined): WebGLProgram {
+        if (vertexShaderSource === undefined) {
+            vertexShaderSource = defaultVertexShaderSource;
+        }
+        if (fragmentShaderSource === undefined) {
+            fragmentShaderSource = defaultFragmentShaderSource;
+        }
         const vertexShader = WebGLUtil.createShader(this.gl, this.gl.VERTEX_SHADER, vertexShaderSource);
         const fragmentShader = WebGLUtil.createShader(this.gl, this.gl.FRAGMENT_SHADER, fragmentShaderSource);
         const program = this.wenGLCreateProgram(this.gl, vertexShader, fragmentShader);
@@ -137,15 +150,19 @@ export class CamoPattern {
         let colorUniformLocation = this.gl.getUniformLocation(program, "u_color");
         this.gl.uniform4f(colorUniformLocation, 1, 0, 0, 1);
 
-        const positions = [
-            0, 0,
-            0, 0.5,
-            1, 0,
-            //
-            // 0, 0,
-            // 0.5, 1,
-            // 1, 0.5
-        ];
+        let resolutionUniformLocation = this.gl.getUniformLocation(program, "u_resolution");
+        this.gl.uniform2f(resolutionUniformLocation, this.gl.canvas.width, this.gl.canvas.height);
+
+        let t = new Triangle([
+            new Point(0, 0),
+            new Point(400, 200),
+            new Point(200, 400)
+        ], undefined, [
+            new RGBA(1, 0, 0),
+            new RGBA(0, 1, 0),
+            new RGBA(0, 0, 1)
+        ]);
+
         const [positionAttributeLocation, positionBuffer] = WebGLUtil.createAttribute2f(
             this.gl, program, "a_position", new Float32Array([]));
         const [vertexColorAttributeLocation, vertexColorBuffer] = WebGLUtil.createAttribute4f(this.gl, program, "a_vertex_color", new Float32Array([]));
@@ -157,32 +174,23 @@ export class CamoPattern {
         this.gl.clearColor(0, 0, 0, 0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
-        this.drawTriangle(
-            [new Point(0, 0), new Point(0, 0.5), new Point(1, 0)],
-            [new RGBA(1, 0, 0), new RGBA(0, 1, 0), new RGBA(0, 0, 1)],
-            positionBuffer,
-            vertexColorBuffer
-        );
+        this.drawTriangle2(t, positionBuffer, vertexColorBuffer);
 
         return program;
     }
 
-    private drawTriangle(points: Point[], colors: RGBA[], positionBuffer, vertexColorBuffer) {
-        const pointsMat = points.flatMap(p => {
-            return p.vec;
-        });
-        const colorsMat = colors.flatMap(c => {
-            return c.vec;
-        })
-
+    private drawTriangle2(triangle: Triangle, positionBuffer, vertexColorBuffer) {
         // Put vertexColor
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexColorBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(colorsMat), this.gl.STATIC_DRAW);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER,
+            new Float32Array(triangle.colors.flatMap(c => c.vec)), this.gl.STATIC_DRAW);
 
         // Put position
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(pointsMat), this.gl.STATIC_DRAW);
-        console.log(pointsMat, colorsMat);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER,
+            new Float32Array(triangle.points.flatMap(p => p.vec)), this.gl.STATIC_DRAW);
+
+        // Draw
         this.gl.drawArrays(this.gl.TRIANGLES, 0, 3);
     }
 

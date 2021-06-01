@@ -2,6 +2,7 @@ import {Point} from "./point"
 import {Polygon} from "./polygon";
 import {Circle} from "./circle";
 import {Edge} from "./edge";
+import RGBA from "../color/RGBA";
 
 export class Triangle extends Polygon{
 
@@ -9,11 +10,11 @@ export class Triangle extends Polygon{
     private _edges: Array<Edge>
     private _circumcircle: Circle;
 
-    constructor(_points: Array<Point>, _color: string) {
+    constructor(_points: Array<Point>, _color: string, _colors: Array<RGBA> = []) {
         if (_points.length != 3) {
             throw Error("Triangle must have 3 points");
         }
-        super(_points, _color);
+        super(_points, _color, undefined, _colors);
     }
 
     get area(): number {
