@@ -8,7 +8,7 @@
     import {Color, ColorItem, ColorPalette} from "../../../camo-pattern-js/src/util/color"
 
     export let camoPattern = "m90p2";
-    export let colorPalette = "desert";
+    export let colorPalette = "green";
     let defaultPalettes = [...Color.getDefaultPalettes()];
     let userPalettes = [...Color.getUserPalettes()];
     let showColorPicker = false;

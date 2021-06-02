@@ -93,8 +93,10 @@ export class Color {
         const rawUserPalettes: ColorPalette[] = JSON.parse(window.localStorage.getItem("userPalettes") || "[]")
         rawUserPalettes.forEach(val => {
             let _colors: Array<string|ColorItem> = val["_colors"];
-            if (_colors.length > 0 && _colors[0]["ratio"] === undefined) {
-               _colors = _colors.map(c => new ColorItem(c as string))
+            if (_colors.length > 0 && _colors[0]["_ratio"] === undefined) {
+                _colors = _colors.map(c => new ColorItem(c as string))
+            } else {
+                _colors = _colors.map(c => new ColorItem(c['_value'], c['_ratio'], c['_sizeFactor']))
             }
             const palette = new ColorPalette(
                 val["_id"], val["_name"], _colors as ColorItem[]

@@ -1,5 +1,5 @@
-import {Renderer} from "./Renderer";
-import {Polygon} from "../../geometry/polygon";
+import type {Renderer} from "./Renderer";
+import type {Polygon} from "../../geometry/polygon";
 
 export class Canvas2DRenderer implements Renderer {
     constructor(private ctx: CanvasRenderingContext2D) {
@@ -24,5 +24,8 @@ export class Canvas2DRenderer implements Renderer {
         this.ctx.closePath();
         this.ctx.stroke();
         this.ctx.fill();
+    }
+
+    clearCanvas() {
     }
 }

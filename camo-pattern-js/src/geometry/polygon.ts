@@ -27,9 +27,9 @@ export class Polygon {
     set color(val: string) {
         this._color = val
     }
-    get colors(): Array<RGBA> {
-        return this._colors
-    }
+    // get colors(): Array<RGBA> {
+    //     return this._colors
+    // }
     get strokeColor() {
         return this._strokeColor
     }

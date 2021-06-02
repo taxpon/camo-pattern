@@ -13,6 +13,7 @@ export class WebGLRenderer implements Renderer {
 
     private positionBuffer: WebGLBuffer;
     private vertexColorBuffer: WebGLBuffer;
+    private defaultProgram: WebGLProgram;
 
     constructor(private gl: WebGLRenderingContext) {
         this.configureWebGL();
@@ -20,14 +21,16 @@ export class WebGLRenderer implements Renderer {
 
     drawPolygon(poly: Polygon, color?: string, strokeColor?: string) {
         // Put vertexColor
-        const dummyColors = poly.points.flatMap(p => {
-            return new RGBA(Math.random(), Math.random(), Math.random()).vec;
+        const _colors = poly.points.flatMap(_ => {
+            if (color != undefined) {
+                return RGBA.fromHex(color).vec;
+            } else {
+                return RGBA.fromHex(poly.color).vec;
+            }
         })
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexColorBuffer);
-        // this.gl.bufferData(this.gl.ARRAY_BUFFER,
-        //     new Float32Array(triangle.colors.flatMap(c => c.vec)), this.gl.STATIC_DRAW);
         this.gl.bufferData(this.gl.ARRAY_BUFFER,
-            new Float32Array(dummyColors), this.gl.STATIC_DRAW);
+            new Float32Array(_colors), this.gl.STATIC_DRAW);
 
         // Put position
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
@@ -36,6 +39,13 @@ export class WebGLRenderer implements Renderer {
 
         // Draw
         this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, poly.points.length);
+    }
+
+    clearCanvas() {
+        this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+        this.gl.clearColor(0, 0, 0, 0);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+        this.configureUniform(this.defaultProgram);
     }
 
     private configureWebGL(vertexShaderSource: string = undefined, fragmentShaderSource: string = undefined) {
@@ -49,20 +59,18 @@ export class WebGLRenderer implements Renderer {
         // Create Program
         const vertexShader = WebGLUtil.createShader(this.gl, this.gl.VERTEX_SHADER, vertexShaderSource);
         const fragmentShader = WebGLUtil.createShader(this.gl, this.gl.FRAGMENT_SHADER, fragmentShaderSource);
-        const program = this.wenGLCreateProgram(vertexShader, fragmentShader);
-        this.gl.useProgram(program);
+        this.defaultProgram = this.wenGLCreateProgram(vertexShader, fragmentShader);
+        this.gl.useProgram(this.defaultProgram);
 
         // Configure variables;
-        this.configureUniform(program);
-        this.configureAttribute(program);
+        this.configureUniform(this.defaultProgram);
+        this.configureAttribute(this.defaultProgram);
 
         // Clear canvas
-        this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
-        this.gl.clearColor(0, 0, 0, 0);
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+        this.clearCanvas();
     }
 
-    private wenGLCreateProgram(vertexShader: WebGLShader, fragmentShader: WebGLShader) {
+    private wenGLCreateProgram(vertexShader: WebGLShader, fragmentShader: WebGLShader): WebGLProgram {
         const program = this.gl.createProgram();
         this.gl.attachShader(program, vertexShader);
         this.gl.attachShader(program, fragmentShader);

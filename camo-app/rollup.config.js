@@ -6,6 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
+import glsl from 'rollup-plugin-glsl';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -77,7 +78,10 @@ export default [
 
 			// If we're building for production (npm run build
 			// instead of npm run dev), minify
-			production && terser()
+			production && terser(),
+			glsl({
+				include: "../**/src/**/*.glsl"
+			})
 		],
 		watch: {
 			clearScreen: false

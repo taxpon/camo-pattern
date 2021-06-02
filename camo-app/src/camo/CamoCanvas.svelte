@@ -13,6 +13,7 @@
         editingColors
     } from "../state/stores";
     import {Point} from "../../../camo-pattern-js/src/geometry/point";
+    import {WebGLRenderer} from "../../../camo-pattern-js/src/drawing/renderer/WebGLRenderer";
 
     export let pattern: string = "m90p2"
     export let color: string
@@ -21,12 +22,14 @@
     let m90p1: M90Pattern1;
     let m90p2: M90Pattern2;
     let ctx;
+    let gl;
     let mouseTrackEnabled: boolean = false;
 
     onMount(() => {
-        ctx = canvas.getContext('2d');
-        m90p1 = new M90Pattern1(ctx)
-        m90p2 = new M90Pattern2(ctx)
+        // ctx = canvas.getContext('2d');
+        gl = canvas.getContext('webgl');
+        // m90p1 = new M90Pattern1(ctx)
+        m90p2 = new M90Pattern2(gl, new WebGLRenderer(gl))
         redraw()
     })
 
@@ -58,7 +61,7 @@
     })
 
     function redraw(colorIter = undefined, skipPointGeneration = false) {
-        if (!ctx) {
+        if (!ctx && !gl) {
             return
         }
         let width = document.documentElement.clientWidth;
@@ -86,8 +89,10 @@
     function clearCanvas(width, height, colorIter = undefined) {
         canvas.setAttribute("width", width.toString());
         canvas.setAttribute("height", height.toString());
-        ctx.fillStyle = colorIter ?  colorIter.next().value.value : Color.getBaseColorFromPalette(color);
-        ctx.fillRect(0, 0, width, height);
+        if (ctx !== undefined) {
+            ctx.fillStyle = colorIter ?  colorIter.next().value.value : Color.getBaseColorFromPalette(color);
+            ctx.fillRect(0, 0, width, height);
+        }
     }
 
     function handleMouseMove(e: MouseEvent) {

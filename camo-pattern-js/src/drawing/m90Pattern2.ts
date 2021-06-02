@@ -37,6 +37,7 @@ export class M90Pattern2 extends BaseLogic {
 
     public draw(width: number, height: number, colors: IterableIterator<ColorItem> | string[], options: Object) {
         let colIter: IterableIterator<ColorItem>
+        this.renderer.clearCanvas();
 
         if (Array.isArray(colors)) {
             colIter = Color.colorGenerator(colors)
@@ -202,9 +203,9 @@ export class M90Pattern2 extends BaseLogic {
 
         this.triangles.forEach(triangle => {
             if (this.isActiveTriangle(triangle)) {
-                this.renderer.drawPolygon(triangle, "red");
+                this.renderer.drawPolygon(triangle, "#FF0000");
             } else if (this.adjacentPolygons && this.adjacentPolygons[triangle.keyIndex]) {
-                this.renderer.drawPolygon(triangle, "blue");
+                this.renderer.drawPolygon(triangle, "#0000FF");
             } else {
                 this.renderer.drawPolygon(triangle);
             }
@@ -215,7 +216,7 @@ export class M90Pattern2 extends BaseLogic {
         this.triangles.forEach(triangle => {
             if (triangle.isContaining(p)) {
                 this.updateActiveTriangle(triangle)
-                this.renderer.drawPolygon(triangle, "red")
+                this.renderer.drawPolygon(triangle, "#FF0000")
             } else {
                 this.renderer.drawPolygon(triangle)
             }
@@ -223,7 +224,7 @@ export class M90Pattern2 extends BaseLogic {
 
         // Overwrite adjacent polygons
         Object.keys(this.adjacentPolygons).forEach(k => {
-            this.renderer.drawPolygon(this.adjacentPolygons[k], "blue");
+            this.renderer.drawPolygon(this.adjacentPolygons[k], "#0000FF");
         })
     }
 
@@ -236,7 +237,7 @@ export class M90Pattern2 extends BaseLogic {
                 }
                 this.edgeMap[e.keyIndex].push(triangle)
             })
-            this.renderer.drawPolygon(triangle);
+            // this.renderer.drawPolygon(triangle);
         })
     }
 
