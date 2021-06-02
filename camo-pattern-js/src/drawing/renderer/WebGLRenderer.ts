@@ -28,6 +28,7 @@ export class WebGLRenderer implements Renderer {
                 return RGBA.fromHex(poly.color).vec;
             }
         })
+        console.log(color, poly.color);
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexColorBuffer);
         this.gl.bufferData(this.gl.ARRAY_BUFFER,
             new Float32Array(_colors), this.gl.STATIC_DRAW);

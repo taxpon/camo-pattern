@@ -64,8 +64,10 @@
         if (!ctx && !gl) {
             return
         }
-        let width = document.documentElement.clientWidth;
-        let height = document.documentElement.clientHeight;
+        // screenSize
+        let width = document.documentElement.clientWidth * devicePixelRatio;
+        let height = document.documentElement.clientHeight * devicePixelRatio;
+
         clearCanvas(width, height, colorIter);
         draw(width, height, colorIter, skipPointGeneration)
     }
@@ -86,9 +88,12 @@
         }
     }
 
-    function clearCanvas(width, height, colorIter = undefined) {
+    function clearCanvas(width: number, height: number, colorIter = undefined) {
         canvas.setAttribute("width", width.toString());
-        canvas.setAttribute("height", height.toString());
+        canvas.setAttribute("height", height .toString());
+        canvas.style.width = (width/devicePixelRatio) + "px";
+        canvas.style.height = (height/devicePixelRatio) + "px";
+
         if (ctx !== undefined) {
             ctx.fillStyle = colorIter ?  colorIter.next().value.value : Color.getBaseColorFromPalette(color);
             ctx.fillRect(0, 0, width, height);
