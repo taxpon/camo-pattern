@@ -50,6 +50,7 @@
         redraw(colorIter, true);
     })
 
+    // TODO: fix bug
     beforeUpdate(() => redraw())
 
     onDestroy(() => {
