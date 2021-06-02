@@ -77,8 +77,8 @@
     function editColorPalette(value) {
         showColorPicker = true;
         colorPalette = editingPaletteId = value.id
-        newColors = value.colors.map(c => {
-            return {color: c}
+        newColors = value.colors.map((c: ColorItem) => {
+            return {color: c.value}
         })
         newPaletteName = value.name
     }
