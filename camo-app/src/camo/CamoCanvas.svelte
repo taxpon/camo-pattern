@@ -102,7 +102,7 @@
 
     function handleMouseMove(e: MouseEvent) {
         if (mouseTrackEnabled && pattern === "m90p2") {
-            m90p2.handleMouseMove(new Point(e.clientX, e.clientY))
+            m90p2.handleMouseMove(new Point(e.clientX*2, e.clientY*2))
         }
     }
 
