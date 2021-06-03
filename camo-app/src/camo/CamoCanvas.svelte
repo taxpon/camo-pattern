@@ -27,7 +27,7 @@
 
     onMount(() => {
         // ctx = canvas.getContext('2d');
-        gl = canvas.getContext('webgl');
+        gl = canvas.getContext('webgl', {preserveDrawingBuffer: true});
         // m90p1 = new M90Pattern1(ctx)
         m90p2 = new M90Pattern2(gl, new WebGLRenderer(gl))
         redraw()
@@ -49,9 +49,8 @@
         const colorIter = Color.colorGenerator(v);
         redraw(colorIter, true);
     })
-
-    // TODO: fix bug
-    beforeUpdate(() => redraw())
+    const unsubscribe5 = numPoints.subscribe(v => redraw())
+    const unsubscribe6 = campDepth.subscribe(v => redraw())
 
     onDestroy(() => {
         unsubscribe();
@@ -110,6 +109,9 @@
     function download() {
         if (!canvas) return;
         let link = document.createElement("a");
+        const renderCanvas = document.createElement("canvas");
+        const renderContext = renderCanvas.getContext("2d");
+        renderContext.drawImage(canvas, 0, 0);
         document.body.appendChild(link)
         link.setAttribute('download', 'camo-pattern.png');
         link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));

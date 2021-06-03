@@ -2,9 +2,6 @@ import type {BaseLogic} from "./drawing/baseLogic";
 import {M90Pattern1} from "./drawing/m90Pattern1";
 import {M90Pattern2} from "./drawing/m90Pattern2";
 import {Point} from "./geometry/point";
-import {WebGLUtil} from "./webgl/WebGLUtil";
-import RGBA from "./color/RGBA";
-import {Triangle} from "./geometry/triangle";
 
 // @ts-ignore
 import defaultVertexShaderSource from "./webgl/glsl/vshader.glsl";

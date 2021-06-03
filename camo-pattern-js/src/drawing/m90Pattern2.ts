@@ -1,12 +1,11 @@
 import {BaseLogic} from "./baseLogic";
 import {Point} from "../geometry/point";
-import {Circle} from "../geometry/circle";
 import {Util} from "../util/util";
 import {Triangle} from "../geometry/triangle";
 import type {Polygon} from "../geometry/polygon";
 import {IndexGenerator} from "../util/indexGenerator";
 import {Color, ColorItem} from "../util/color";
-import {Renderer} from "./renderer/Renderer";
+import type {Renderer} from "./renderer/Renderer";
 import {Canvas2DRenderer} from "./renderer/Canvas2DRenderer";
 
 export class M90Pattern2 extends BaseLogic {

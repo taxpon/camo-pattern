@@ -1,5 +1,5 @@
-import {Renderer} from "./Renderer";
-import {Polygon} from "../../geometry/polygon";
+import type {Renderer} from "./Renderer";
+import type {Polygon} from "../../geometry/polygon";
 
 // @ts-ignore
 import defaultVertexShaderSource from "../../webgl/glsl/vshader.glsl";
@@ -7,7 +7,7 @@ import defaultVertexShaderSource from "../../webgl/glsl/vshader.glsl";
 // @ts-ignore
 import defaultFragmentShaderSource from "../..//webgl/glsl/fshader.glsl";
 import {WebGLUtil} from "../../webgl/WebGLUtil";
-import RGBA from "../../color/RGBA";
+import {RGBA} from "../../color/RGBA";
 
 export class WebGLRenderer implements Renderer {
 
@@ -28,7 +28,6 @@ export class WebGLRenderer implements Renderer {
                 return RGBA.fromHex(poly.color).vec;
             }
         })
-        console.log(color, poly.color);
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexColorBuffer);
         this.gl.bufferData(this.gl.ARRAY_BUFFER,
             new Float32Array(_colors), this.gl.STATIC_DRAW);

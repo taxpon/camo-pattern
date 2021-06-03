@@ -2,7 +2,7 @@ import {Point} from "./point"
 import {Polygon} from "./polygon";
 import {Circle} from "./circle";
 import {Edge} from "./edge";
-import RGBA from "../color/RGBA";
+import type {RGBA} from "../color/RGBA";
 
 export class Triangle extends Polygon{
 

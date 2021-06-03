@@ -95,15 +95,15 @@ $size: 1.2rem;
     }
   }
 
-  .trash-button {
-    float: left;
-    margin: 1rem;
-    cursor: pointer;
-
-    &:hover {
-      color: #2d2d2d;
-    }
-  }
+  //.trash-button {
+  //  float: left;
+  //  margin: 1rem;
+  //  cursor: pointer;
+  //
+  //  &:hover {
+  //    color: #2d2d2d;
+  //  }
+  //}
 }
 @media only screen
 and (max-device-width: 812px) {

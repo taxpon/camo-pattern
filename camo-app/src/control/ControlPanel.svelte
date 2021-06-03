@@ -50,7 +50,7 @@
 
     function addNewColor(propagate = true) {
         // TODO: May have a bug
-        newColors = newColors.concat({color: "#" + Math.floor(Math.random() * 16777215).toString(16)});
+        newColors = newColors.concat({color: "#" + ("0" + Math.floor(Math.random() * 16777215).toString(16)).slice(-6)});
         if (propagate) {
             updateEditingColors();
         }
@@ -158,7 +158,7 @@
                     {#each [...defaultPalettes] as [key, value] (key)}
                         <div style="width: 100%; display: flex;">
                             <label class="radio">
-                                <input type="radio" bind:group={colorPalette} value="{key}">
+                                <input type="radio" bind:group={colorPalette} value="{key}" on:change={() => handleRefresh()}>
                                 <span class="outside"><span class="inside"></span></span>
                                 <span class="radio-name">{value.name}</span>
                             </label>
@@ -167,7 +167,7 @@
                     {#each [...userPalettes] as [key, value] (key)}
                         <div style="width: 100%; display: flex; align-items: center;">
                             <label class="radio">
-                                <input type="radio" bind:group={colorPalette} value="{key}">
+                                <input type="radio" bind:group={colorPalette} value="{key}" on:change={() => handleRefresh()}>
                                 <span class="outside"><span class="inside"></span></span>
                                 <span class="radio-name">{value.name}</span>
                             </label>

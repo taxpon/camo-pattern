@@ -1,5 +1,5 @@
 import {Point} from "./point"
-import RGBA from "../color/RGBA";
+import type {RGBA} from "../color/RGBA";
 
 export class Polygon {
     private _center: Point

@@ -1,4 +1,4 @@
-export default class RGBA {
+export class RGBA {
     constructor(private _r: number, private _g: number, private _b: number, private _a: number = 1) {
     }
 
@@ -9,9 +9,6 @@ export default class RGBA {
 
     static fromHex(hex: string): RGBA {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        if (result === null) {
-            console.log("#@@@@@", hex);
-        }
         return new RGBA(
             parseInt(result[1], 16),
             parseInt(result[2], 16),
